@@ -1,5 +1,30 @@
-ROOT_UPLOAD_DIR = "/static/uploads/"
-PDF_UPLOAD_DIR = "/static/uploads/pdf/"
+ROOT_UPLOAD_DIR = "static/uploads/"
+PDF_UPLOAD_DIR = "static/uploads/pdf/"
+
+SUPPORTED_DATE_FORMATES = [
+    '%Y-%m-%d', # yyyy-mm-dd
+    '%d-%m-%Y', # dd-mm-yyyy
+    '%m-%d-%Y', # mm-dd-yyyy
+    '%Y/%m/%d', # yyyy/mm/dd
+    '%d/%m/%Y', # dd/mm/yyyy
+    '%m/%d/%Y', # mm/dd/yyyy
+    '%Y.%m.%d', # yyyy.mm.dd
+    '%d.%m.%Y', # dd.mm.yyyy
+    '%m.%d.%Y', # mm.dd.yyyy
+    '%Y_%m_%d', # yyyy_mm_dd
+    '%d_%m_%Y', # dd_mm_yyyy
+    '%m_%d_%Y', # mm_dd_yyyy
+    '%Y%m%d',   # yyyymmdd
+    '%d%m%Y',   # ddmmyyyy
+    '%m%d%Y',   # mmddyyyy
+    '%d-%b-%Y', # dd-MMM-yyyy
+    '%d-%b-%y', # dd-MMM-yy
+    '%d/%b/%Y', # dd/MMM/yyyy
+    '%d.%b.%Y', # dd.MMM.yyyy
+    '%d %b %Y', # dd MMM yyyy
+    '%d %B %Y', # dd Month yyyy
+]
+
 ALLOWED_CONTENT_TYPES = [
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

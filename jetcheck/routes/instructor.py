@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, request, session, flash, send_file, jsonify, redirect, render_template,  url_for
 
 from jetcheck.auth import (login_instructor, logout_instructor, required_instructor_login, required_tsession, validate_email, is_valid_password)
+from jetcheck.formator import string_to_date
+from jetcheck.mail import send_email_verification_mail
 from jetcheck.models import FileList, Institute, Instructor, Tokens, Student, db
 from jetcheck.models.turnitin import Assignment
 from jetcheck.secrets import KEY
@@ -108,6 +110,10 @@ def index():
 @required_instructor_login
 def create_token(is_verified, email):
     token = jwt.encode({"instructor_id": session['instructor_id'], "completed_setup": is_verified, "email": email, "exp": datetime.utcnow() + timedelta(days=1)}, KEY, algorithm='HS256')
+    send_email_verification_mail({
+        "to" : email,
+        "link": "https://jetck.com" + url_for("ta.create_profile", token=token)
+    })
     return jsonify(token=token)
 
 
@@ -123,8 +129,8 @@ def add_teacher_assistant():
     if request.method == "POST":
 
         email = request.form['taEmail']
-        start_date = request.form['taInitialDate']
-        end_date = request.form['taExpireDate']
+        start_date = string_to_date(request.form['taInitialDate'])
+        end_date = string_to_date(request.form['taExpireDate'])
         account_sts = request.form['taAccountStatus']
 
         if not (email and start_date and end_date):
@@ -149,16 +155,22 @@ def add_teacher_assistant():
             ta.end_date = end_date
             ta.account_sts = account_sts
             ta.instructor_id = account.id
+            account.limit[0].enrolled += 1
             db.session.add(ta)
+            db.session.add(account)
             db.session.commit()
             # return redirect(url_for('instructor.create_token', is_verified=ta.is_verified, email=ta.email))
 
             token = jwt.encode({"instructor_id": session['instructor_id'], "completed_setup": ta.is_verified, "email": ta.email, "exp": datetime.utcnow() + timedelta(days=1)}, KEY, algorithm='HS256')
-            print(token)
             # sending email
+            send_email_verification_mail({
+                "to" : ta.email,
+                "link": "https://jetck.com"+ url_for("ta.create_profile", token=token)
+            })
 
-            flash(f"Email has been sent to <strong>{ta.email}</strong>")  
+            flash(f"Email has been sent to <strong>{ta.email}</strong>", "info")  
         except Exception as e:
+            print(e)
             flash(f"The email <strong>{ta.email}</strong> is added by someone else", "danger")
             return redirect(url_for("instructor.add_teacher_assistant"))
 
@@ -174,8 +186,8 @@ def edit_teacher_assistant(id):
         return redirect(url_for("instructor.all_teacher_assistant"))
     if request.method == "POST":
         email = request.form['taEmail']
-        start_date = request.form['taInitialDate']
-        end_date = request.form['taExpireDate']
+        start_date = string_to_date(request.form['taInitialDate'])
+        end_date = string_to_date(request.form['taExpireDate'])
         account_sts = request.form['taAccountStatus']
 
         if not (email and start_date and end_date):
@@ -208,6 +220,8 @@ def delete_teacher_assistant(id):
     if account == None:
         flash("No Account Found", "danger")
         return redirect(url_for("instructor.all_teacher_assistant"))
+    
+    account.instructor.limit[0].enrolled -= 1
     db.session.delete(account)
     db.session.commit()
     return redirect(url_for('instructor.all_teacher_assistant'))
@@ -308,8 +322,6 @@ def download_file(file_id):
     pdf_uploads = app.config['UPLOAD_FOLDER'] +"pdf/"
     pdf_file_path = pdf_uploads+file_title+".pdf"
     is_view = False if request.args.get("view") else True
-
-    print(pdf_file_path)
     
     if not os.path.exists(pdf_file_path):
         download_file_info = wtapi.DownloadFileInfo(
@@ -320,12 +332,12 @@ def download_file(file_id):
         )
         
         try:
-            wtapi.download_file(pdf_uploads + file_title+".pdf", download_file_info, session["instructor_token"])
+            wtapi.download_file(pdf_file_path, download_file_info, session["instructor_token"])
         except Exception as e:
             print(e)
             return {"error": f"{e}"}
     # return ""
-    return send_file("static/uploads/pdf/"+ file_title+".pdf", as_attachment=is_view)
+    return send_file(pdf_file_path, as_attachment=is_view)
 
 
 @instructor.get("/delete_file/<int:id>")

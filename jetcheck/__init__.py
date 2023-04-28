@@ -17,9 +17,10 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime, timedelta
+
 from jetcheck.auth import is_valid_password, required_tsession
 from jetcheck.secrets import KEY
-
+from jetcheck import settings
 
 path = os.path.abspath(".")
 db = SQLAlchemy()
@@ -31,10 +32,11 @@ app.config['SECRET_KEY'] = KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///jetcheck.sqlite"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/jetcheck'
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=100000)
-app.config['UPLOAD_FOLDER'] = path + "/static/uploads/"
+app.config['UPLOAD_FOLDER'] =  "static/uploads/"
 
 from jetcheck.models import *
 from jetcheck.routes import *
+from jetcheck.mail import send_email_verification_mail, generate_verification_email_html
 # from jetcheck import settings
 import wtapi
 
@@ -56,7 +58,7 @@ def load_user(user_id):
     #     user.is_logged_in = False
     #     db.session.commit()
     return user
- 
+
 
 @app.route("/login/", methods=["GET", "POST"])
 def login():
@@ -64,9 +66,9 @@ def login():
     if request.method == "POST":
         data = request.get_json()
         user: Student = Student.query.filter(Student.email == data['email']).first()
+        if user and user.is_verified != 1:
+            return jsonify({"error": "Please verify your account"})
         if user and check_password_hash(user.password, data['password']):
-            if user.is_verified != 1:
-                return jsonify({"error": "Please verify your account"})
             if datetime.now().date() > user.end_date:
                 return jsonify({"error": "Your account is expired"})
             if user.account_sts != 1:
@@ -85,7 +87,7 @@ def login():
             # user.is_logged_in = True
             db.session.add(user)
             db.session.commit()
-            login_user(user, remember=True)
+            login_user(user)
             session['user_email'] = user.email
             session['instructor_token'] = user.instructor.token[0].token
             return jsonify({"url": url_for("wtapi_login", token=session['instructor_token']) + "?next="+ url_for('index')})
@@ -223,8 +225,8 @@ def upload_file():
         file.size = submit_response['file_size']
         file.path = os.path.join(app.config['UPLOAD_FOLDER'],"pdf", submit_response['file_title']+".pdf")
         file.description = description
-        file.plagiarism = res['plagiarism']
-        file.upload_date = datetime.now()
+        # file.plagiarism = res['plagiarism']
+        file.upload_date = datetime.now().date()
         file.assignment_id = assignment.id
         db.session.add(file)
         db.session.commit()
@@ -248,7 +250,7 @@ def download_file(file_id):
     pdf_uploads = app.config['UPLOAD_FOLDER'] +"pdf/"
     pdf_file_path = pdf_uploads+file_title+".pdf"
     is_view = False if request.args.get("view") else True
-    
+
     if not os.path.exists(pdf_file_path):
         download_file_info = wtapi.DownloadFileInfo(
             session_id=session['t_sid'],
@@ -256,14 +258,15 @@ def download_file(file_id):
             assignment_id=file.assignment.aid
         )
         
-        # try:
-        wtapi.download_file(pdf_file_path, download_file_info, token=session['instructor_token'])
-        # except Exception as e:
-        #     print(e)
-        #     # return redirect(url_for("wtapi_login", token=current_user.std_instructor.token[0].token))
+        try:
+            wtapi.download_file(pdf_file_path, download_file_info, token=session['instructor_token'])
+        except Exception as e:
+            print(e)
+            flash("Failed: error occured while downloading, please try again.", "danger")
+            return redirect(url_for("wtapi_login", token=current_user.instructor.token[0].token))
         #     return {"error": f"{e}"}
     # return ""
-    return send_file(pdf_file_path.split("jetcheck/")[1], as_attachment=is_view)
+    return send_file(pdf_file_path, as_attachment=is_view)
 
 
 @app.post("/delete_file/<int:file_id>")

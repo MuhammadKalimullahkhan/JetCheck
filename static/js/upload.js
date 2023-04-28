@@ -65,9 +65,10 @@ function submitForm() {
         },
         error: (xhr, status, error) => {
             console.log(error)
-            loadingScreen.querySelector("h3").textContent = "Error " + error;
+            loadingScreen.querySelector("h3").textContent = "Error: " + "Failed to upload, Please try again.";
             setTimeout(() => {
                 document.querySelector(".loading-screen").setAttribute("hidden", "");
+                loadingScreen.querySelector("h3").textContent = "Just a moment...";
             }, 1000);
         }
     });

@@ -1,5 +1,7 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from jetcheck.formator import string_to_date
+from jetcheck.mail import send_email_verification_mail
 from jetcheck.models import *
 from jetcheck.secrets import KEY
 from jetcheck.auth import required_admin_login, logout_admin, login_admin, required_tsession
@@ -63,8 +65,8 @@ def add_instructors():
         instructor = Instructor(
             admin_id=request.form['insAdmin'],
             email=request.form['insEmail'],
-            start_date=request.form['insInitialDate'],
-            end_date=request.form['insExpireDate'],
+            start_date= string_to_date(request.form['insInitialDate']),
+            end_date=string_to_date(request.form['insExpireDate']),
             account_sts=request.form['insAccountStatus']
         )
         limit = InstructorLimit(
@@ -78,9 +80,11 @@ def add_instructors():
 
         # TODO Send this token to the user on email.
         token = jwt.encode({"instructor_id": instructor.id, "instructor_status":instructor.account_sts, "instructor_email": instructor.email, "admin_id":instructor.admin_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)}, KEY, algorithm='HS256')
+        send_email_verification_mail({
+            "to" : instructor.email,
+            "link": "https://jetck.com"+url_for("instructor.create_profile", token=token)
+        })
         flash("Instructor added successfully","success")
-        return redirect(url_for("auth.verify_token", token=token))
-        # send_email(token)
 
     admins = Admin.query.all()
     return render_template("admin/instructor/add_instructor.html", title="Add Instructors", data={"admins":admins})
@@ -93,8 +97,8 @@ def edit_instructors(id):
     admins = Admin.query.all()
     if request.method == "POST":
         account.email = request.form['insEmail']
-        account.start_date = request.form['insInitialDate']
-        account.end_date = request.form['insExpireDate']
+        account.start_date = string_to_date(request.form['insInitialDate'])
+        account.end_date = string_to_date(request.form['insExpireDate'])
         account.account_sts = request.form['insAccountStatus']
         account.admin_id = request.form['insAdmin']
         db.session.add(account)
@@ -120,8 +124,10 @@ def refresh_token_for_instructor(id):
     instructor = Instructor.query.filter(Instructor.id == id).first()
     if instructor:
         token = jwt.encode({"instructor_id": instructor.id, "instructor_status":instructor.account_sts, "instructor_email": instructor.email, "admin_id":instructor.admin_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)}, KEY, algorithm='HS256')
-        print(token)
-        # TODO: send token to instructor on email
+        send_email_verification_mail({
+            "to" : instructor.email,
+            "link": "https://jetck.com"+url_for("instructor.create_profile", token=token)
+        })
         flash("Verification email has been send to the Instructor's email","success")
 
     return redirect(url_for('admin.all_instructors'))
@@ -146,15 +152,26 @@ def add_students():
         instructor = Instructor.query.filter(Instructor.id == int(instructor_id)).first()
         
         student.email = request.form['stdEmail']
-        student.start_date = request.form['stdInitialDate']
-        student.end_date = request.form['stdExpireDate']
+        student.start_date = string_to_date(request.form['stdInitialDate'])
+        student.end_date = string_to_date(request.form['stdExpireDate'])
         student.account_sts = request.form['stdAccountStatus']
         # student.instructor_id = instructor_id
         student.instructor = instructor
 
-        db.session.add(student)
-        db.session.commit()
+        try: 
+            db.session.add(student)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            flash(f"The email <strong>{student.email}</strong> is added by someone else", "danger")
+            return redirect(url_for("admin.add_students"))
+
+        token = jwt.encode({"instructor_id": instructor_id, "completed_setup": student.is_verified, "email": student.email, "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)}, KEY, algorithm='HS256')
         
+        send_email_verification_mail({
+            "to" : student.email,
+            "link": "https://jetck.com"+url_for("ta.create_profile", token=token)
+        })
         flash("Email has been sent to the TA's email", "success")
         return redirect(url_for("admin.all_students"))
 
@@ -171,8 +188,8 @@ def edit_students(id):
         student.last_name = request.form['stdLastName']
         student.email = request.form['stdEmail']
         student.contact = request.form['stdContact']
-        student.start_date = request.form['stdInitialDate']
-        student.end_date = request.form['stdExpireDate']
+        student.start_date = string_to_date(request.form['stdInitialDate'])
+        student.end_date = string_to_date(request.form['stdExpireDate'])
         student.account_sts = request.form['stdAccountStatus']
         student.std_instructor.id = request.form['stdInstructor']
 

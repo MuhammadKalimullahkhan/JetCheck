@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, session, flash, jsonify, 
 from jetcheck.auth import is_valid_password
 from jetcheck.models import Student, db
 from jetcheck.secrets import KEY
+from jetcheck.flask import go_back
 
 import jwt
 
@@ -12,9 +13,13 @@ student = Blueprint("ta", __name__, url_prefix="/ta")
 
 @student.route('/profile/create/<string:token>', methods=['GET', 'POST'])
 def create_profile(token):
-    try:
+    # try:
         decoded = jwt.decode(token, KEY, algorithms=['HS256'])
-        account:Student = Student.query.filter(Student.email == decoded['email'], Student.instructor_id == session['instructor_id']).first()
+        account:Student = Student.query.filter(Student.email == decoded['email'], Student.instructor_id == decoded['instructor_id']).first()
+
+        if account == None:
+            flash("Please create an account first", "danger")
+            return go_back()
 
         if account.is_verified != 0:
             flash("Your account has already been verified", "success")
@@ -28,7 +33,8 @@ def create_profile(token):
 
             if first_name and last_name and password:
                 if not is_valid_password(password):
-                    flash("Password must be 8 characters and must contain symbols, letters and numbers ")
+                    flash("Password must be 8 characters and must contain symbols, letters and numbers", "danger")
+                    return redirect(url_for('ta.create_profile', token=token))
                 
                 account.is_verified = 1
                 account.first_name = first_name
@@ -40,6 +46,6 @@ def create_profile(token):
                 flash("Your account has been verified successfully", "success")
                 return redirect(url_for('login'))
         return render_template("student/create_profile.html")
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
         return jsonify(error=1, message="Token is Invalid or Expired")

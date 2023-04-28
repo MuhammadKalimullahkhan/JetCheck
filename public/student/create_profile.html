@@ -27,6 +27,20 @@
 </head>
 
 <body>
+    <div class="position-fixed d-flex align-items-center justify-content-center"
+      style="bottom: 5%;right: 0%;z-index: 2; width: 100%;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert" data-mdb-autohide="true"
+        data-mdb-delay="3000">
+        {{ message | safe}}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+    
     <div class="container">
         <div class="row w-100">
             <div class="col-12">
