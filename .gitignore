@@ -4,6 +4,8 @@ env/
 env3/
 migrations/
 instance/
+static1/
+templates1/
 
 *.ps1
 *.pdf
