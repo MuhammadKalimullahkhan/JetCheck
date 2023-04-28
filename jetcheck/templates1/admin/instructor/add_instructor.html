@@ -1,0 +1,82 @@
+{% extends 'admin/base.html' %}
+{% block body %}
+<div class="row py-3">
+    <div class="col-12 d-flex">
+        <h3>{{ title }}</h3>
+        <div class="ms-auto">
+            <span class="material-icons-round icon rounded-5"
+                onclick="window.location.href = `{{url_for('admin.all_instructors')}}`">
+                people
+            </span>
+        </div>
+    </div>
+    <div class="hr"></div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <form action="" method="post">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12 mt-3">
+                        <label for="insEmail" style="color: var(--fonts-color);">
+                            Email <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="email" name="insEmail" id="insEmail"
+                            placeholder="alikhan@wss.com">
+                    </div>
+                    <div class="col-12 col-md-6 mt-3">
+                        <label for="insEnrolled" style="color: var(--fonts-color);">
+                            Enrolled TA's <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="number" name="insEnrolled" id="insEnrolled"
+                            placeholder="0" value="0">
+                    </div>
+                    <div class="col-12 col-md-6 mt-3">
+                        <label for="insTotalLimit" style="color: var(--fonts-color);">
+                            Total Limit <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="number" name="insTotalLimit" id="insTotalLimit"
+                            placeholder="500">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insInitialDate" style="color: var(--fonts-color);">
+                            Initial Date <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="date" name="insInitialDate" id="insInitialDate">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insExpireDate" style="color: var(--fonts-color);">
+                            Expire Date <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="date" name="insExpireDate" id="insExpireDate">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insAccountStatus" style="color: var(--fonts-color);">
+                            Account Status
+                        </label>
+                        <select class="select" name="insAccountStatus" id="insAccountStatus">
+                            <option value="0">Locked</option>
+                            <option value="1" selected>Open</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insAdmin" style="color: var(--fonts-color);">
+                            Admin <span class="text-danger">*</span>
+                        </label>
+                        <select class="select" name="insAdmin" id="insAdmin" required>
+                            <option value="">-- SELECT ADMIN --</option>
+                            {% for admin in data['admins'] %}
+                            <option value="{{admin.id}}">{{admin.username}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button id="submit" type="submit" class="btn btn-lg btn-primary btn-block mt-4">
+                    add Instructor
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- fileDetailsModal -->
+{% endblock %}

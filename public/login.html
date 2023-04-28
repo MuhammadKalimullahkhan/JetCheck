@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jet Check - Login</title>
+
+    <!-- Google -->
+    <!-- Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+      rel="stylesheet"
+    />
+    <!-- End Google -->
+
+    <link rel="stylesheet" href="/static/mdb5/css/core.min.css" />
+    <link rel="stylesheet" href="/static/css/login.css" />
+
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script defer src="/static/mdb5/js/mdb.min.js"></script>
+    <script defer src="/static/js/login.js"></script>
+  </head>
+  <body>
+    <div class="position-fixed d-flex align-items-center justify-content-center"
+      style="bottom: 5%;right: 0%;z-index: 2; width: 100%;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert" data-mdb-autohide="true"
+        data-mdb-delay="3000">
+        {{ message | safe}}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+    
+    <div class="login">
+      <div class="login-left-section">
+        <h4 class="text-center text-primary mb-4">
+          <strong class="text-uppercase">{{title}}</strong>
+        </h5>
+        <div id="error"></div>
+        <form action="" method="post">
+          <div class="input-group">
+            <span class="material-icons-round"> alternate_email </span>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              placeholder="jetcheck@jetcheck.com"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <span class="material-icons-round"> lock </span>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <div class="d-flex align-items-center">
+            <a href="#" class="ms-auto">Forgot Password?</a>
+          </div>
+          <button
+            id="submit"
+            type="button"
+            class="btn btn-lg btn-primary btn-block mt-4"
+          >
+            Log In
+          </button>
+          {% if url_for(request.endpoint) == url_for('instructor.login') %}
+          <div class="d-flex align-items-center mt-4">
+            <!-- <a href="#" class="me-auto">Create Account?</a> -->
+            <a href="{{ url_for('login') }}" class="btn btn-outline-danger btn-block">login as Teacher Assistant</a>
+          </div>
+          {% else %}
+          <div class="d-flex align-items-center mt-4">
+            <!-- <a href="#" class="me-auto">Create Account?</a> -->
+            <a href="{{ url_for('instructor.login') }}" class="btn btn-outline-danger btn-block">login as Instructor</a>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+      <div class="login-right-section d-none d-md-block">
+        <div class="blur"></div>
+        {% for i in range(3) %}
+        <div class="element-{{i+1}}"></div>
+        {% endfor %}
+        <div class="content">
+          <h1>
+            Welcome to
+            <b> Jet Check </b>
+          </h1>
+          <p class="subheading">
+            Leave plagiarism in the past, fly with <b>JetCheck</b> to a brighter
+            future!
+          </p>
+          <p>
+            JET Check is a powerful plagiarism checker designed to help
+            students, educators, and professionals detect and prevent plagiarism
+            in their written work. It utilizes advanced algorithms and
+            technologies to compare text against a vast database of sources and
+            identify potential instances of plagiarism. With its user-friendly
+            interface, customizable settings, and comprehensive reporting, JET
+            Check is an essential tool for anyone looking to ensure the
+            originality and integrity of their writing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

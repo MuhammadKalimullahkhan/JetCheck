@@ -1,0 +1,93 @@
+{% extends 'admin/base.html' %}
+{% block body %}
+<div class="row py-3">
+    <div class="col-12 d-flex">
+        <h3>{{ title }}</h3>
+        <div class="ms-auto">
+            <span class="material-icons-round icon rounded-5"
+                onclick="window.location.href = `{{url_for('admin.all_instructors')}}`">
+                people
+            </span>
+        </div>
+    </div>
+    <div class="hr"></div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <form action="" method="post">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12 mt-3">
+                        <label for="insEmail" style="color: var(--fonts-color);">
+                            Email <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="email" name="insEmail" id="insEmail"
+                            placeholder="alikhan@wss.com" value="{{account.email}}">
+                    </div>
+                    <div class="col-12 col-md-6 mt-3">
+                        <label for="insEnrolled" style="color: var(--fonts-color);">
+                            Enrolled TA's <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="number" name="insEnrolled" id="insEnrolled"
+                            placeholder="alikhan@wss.com" value="{{account.limit[0].enrolled}}">
+                    </div>
+                    <div class="col-12 col-md-6 mt-3">
+                        <label for="insTotalLimit" style="color: var(--fonts-color);">
+                            Total Limit <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="number" name="insTotalLimit" id="insTotalLimit"
+                            placeholder="alikhan@wss.com" value="{{account.limit[0].total_limit}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insInitialDate" style="color: var(--fonts-color);">
+                            Initial Date <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="date" name="insInitialDate" id="insInitialDate" value="{{account.start_date}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insExpireDate" style="color: var(--fonts-color);">
+                            Expire Date <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="date" name="insExpireDate" id="insExpireDate" value="{{account.end_date}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insAccountStatus" style="color: var(--fonts-color);">
+                            Account Status
+                        </label>
+                        <select class="select" name="insAccountStatus" id="insAccountStatus">
+                            {% if  account.account_sts == 0 %}
+                            <option value="0" selected>Locked</option>
+                            <option value="1">Open</option>
+                            <option value="2">Closed</option>
+                            {% elif  account.account_sts == 1 %}
+                            <option value="0">Locked</option>
+                            <option value="1" selected>Open</option>
+                            <option value="2">Closed</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="insAdmin" style="color: var(--fonts-color);">
+                            Admin <span class="text-danger">*</span>
+                        </label>
+                        <select class="select" name="insAdmin" id="insAdmin" required>
+                            <option value="">-- SELECT ADMIN --</option>
+                            {% for admin in admins %}
+                                {% if admin.id == account.admin.id %}
+                                    <option value="{{admin.id}}" selected>{{admin.username}}</option>
+                                {% else %}
+                                    <option value="{{admin.id}}">{{admin.username}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button id="submit" type="submit" class="btn btn-lg btn-primary btn-block mt-4">
+                    add Instructor
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- fileDetailsModal -->
+{% endblock %}

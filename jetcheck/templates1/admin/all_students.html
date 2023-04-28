@@ -1,0 +1,74 @@
+{% extends 'admin/base.html' %}
+{% block body %}
+<div class="row py-3">
+    <div class="col-12 d-flex">
+        <h3>{{ title }}</h3>
+        <div class="ms-auto">
+            <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for('admin.add_students')}}`">
+                person_add
+            </span>
+        </div>
+    </div>
+    <div class="hr"></div>
+</div>
+<div class="row">
+    <div class="col-12 table-responsive">
+        {% if data['accounts'][0] | length <= 0 %}
+        <div class="alert alert-info">
+            No Data Found
+        </div>
+        {% else %}
+        <table class="table table-secondary table-striped">
+            <thead>
+                <tr>
+                    <th>#</td>
+                    <th>First Name</td>
+                    <th>Last Name</td>
+                    <th>Email</td>
+                    <th>Instructor</td>
+                    <th>Start Date</td>
+                    <th>Expire Date</td>
+                    <th>Status</td>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student, instructor in data['accounts'] %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td>{{student.first_name}}</td>
+                    <td>{{student.last_name}}</td>
+                    <td>{{student.email}}</td>
+                    <td>{{instructor.first_name}}</td>
+                    <td>{{student.start_date}}</td>
+                    <td>{{student.end_date}}</td>
+                    <td>
+                        {% if student.account_sts == 0 %}
+                            <span class="badge badge-warning">Locked</span>
+                        {% elif student.account_sts == 1 %}
+                            <span class="badge badge-primary">Open</span>
+                        {% elif student.account_sts == 2 %}
+                            <span class="badge badge-danger">Close</span>
+                        {% else %}
+                        {% endif %}
+                    </td>
+                    <td class="d-flex">
+                        <a href="{{url_for('admin.edit_students', id=student.id)}}" class="btn btn-sm btn-outline-primary p-1 me-1">
+                            <span class="material-icons-round">edit</span>
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger p-1 me-1"
+                            hx-post="{{ url_for('admin.delete_students', id=student.id) }}"
+                            hx-confirm="Are you sure you want to delete this teacher assistant?"
+                            hx-target="#content">
+                            <span class="material-icons-round">delete</span>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+<!-- fileDetailsModal -->
+{% endblock %}

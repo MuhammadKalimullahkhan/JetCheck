@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jet Check - Login</title>
+
+    <!-- Google -->
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <!-- End Google -->
+
+    <link rel="stylesheet" href="/static/mdb5/css/core.min.css" />
+    <link rel="stylesheet" href="/static/css/login.css" />
+
+    <script defer src="/static/mdb5/js/mdb.min.js"></script>
+</head>
+
+<body>
+    <div class="position-fixed d-flex align-items-center justify-content-center"
+      style="bottom: 5%;right: 0%;z-index: 2; width: 100%;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert" data-mdb-autohide="true"
+        data-mdb-delay="3000">
+        {{ message | safe}}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+    <div class="login">
+        <div class="login-left-section w-50 py-5 mx-auto bg-light rounded-4 shadow-4">
+            <h3 class="text-center text-primary mb-4">
+                <strong>SUPERADMIN LOGIN</strong>
+            </h3>
+            <div id="error"></div>
+            <form action="" method="post">
+                <div class="input-group">
+                    <span class="material-icons-round"> alternate_email </span>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="abc@wazar.pk"
+                        required />
+                </div>
+                <div class="input-group">
+                    <span class="material-icons-round"> lock </span>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password"
+                        required />
+                </div>
+                <div class="d-flex align-items-center">
+                    <!-- <a href="#" class="me-auto">Create Account?</a> -->
+                    <a href="#" class="ms-auto">Forgot Password?</a>
+                </div>
+                <button id="submit" type="submit" class="btn btn-lg btn-primary btn-block mt-4">
+                    sign In
+                </button>
+                <div class="col-12 mt-4 d-flex align-items-center">
+                    <a href="{{ url_for('login') }}" class="btn btn-success w-100 me-2">Login as TA</a>
+                    <a href="{{ url_for('instructor.login') }}" class="btn btn-success w-100 btn-block">Login as Instructor</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

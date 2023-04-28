@@ -1,0 +1,112 @@
+body{
+    width: auto;
+    height: auto;
+    background-color: #f1f1f1;
+}
+
+.login{
+    height: 100vh;
+    display: flex;
+}
+
+.login-left-section{
+    width: 800px;
+    height: auto;
+    margin: auto 0;
+    padding: 20px 100px;
+
+}
+.login-right-section{
+    /* background-image: url("/static/images/bg/login_section.jpg"); */
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.login-right-section .blur{
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(60px);
+    position: absolute;
+}
+.login-right-section .element-1,
+.login-right-section .element-2,
+.login-right-section .element-3
+{
+    width: 150px;
+    height: 150px;
+    border-radius: 150px;
+    position: absolute;
+    z-index: -1;
+}
+.login-right-section .element-1{
+    width: 40%;
+    height: 40%;
+    right: 50%;
+    background-color: #0000ff69;
+}
+.login-right-section .element-2{
+    right: 0;
+    bottom: 0;
+    background-color: red;
+}
+.login-right-section .element-3{
+    left: 0;
+    bottom: 0;
+    width: 20%;
+    height: 20%;
+    border-radius: 20%;
+    background-color: #00ffff8e;
+}
+.login-right-section .content{
+    padding: 0px 100px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    color: #4e515a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.login-right-section .content h1 b{
+    color: #3b71ca;
+}
+.login-right-section .content p{
+    font-size: 1rem;
+    text-align: justify;
+    user-select: none;
+}
+.login-right-section .content .subheading{
+    font-size: .88rem;
+}
+.login-right-section .content .subheading b{
+    color: #3b71ca;
+    font-weight: 900;
+    /* font-size: 1.4rem; */
+}
+.input-group{
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    margin: 10px 0;
+    padding: 5px 20px;
+    border-radius: 30px;
+}
+.input-group .form-control{
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+.input-group .form-control:focus,
+.input-group .form-control:active{
+    box-shadow: none;
+    outline: none;
+    border: none;
+}
+form .btn{
+    border-radius: 40px;
+}

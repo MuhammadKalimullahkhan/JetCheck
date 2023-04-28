@@ -1,0 +1,30 @@
+{% extends 'admin/base.html' %}
+{% block body %}
+
+<div class="row py-3">
+    <div class="col-12 d-flex">
+        <h3>{{ title }}</h3>
+    </div>
+    <div class="hr"></div>
+</div>
+<div class="row">
+    {% set urls = [url_for('admin.all_students'), url_for('admin.all_instructors')] %}
+    {% set labels = ["Teacher Assistant", "Instructor"] %}
+
+    {% for i in range(urls|length) %}
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 g-3">
+        <div class="card dark-bg text-center cursor-pointer" onclick="location.href = `{{urls[i]}}`">
+            <div class="large-icon mt-4">
+                <i class="material-icons-round">note_add</i>
+            </div>
+            <div class="card-body">
+                <div class="card-title">
+                    <h1 class="text-12">{{labels[i]}}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<!-- fileDetailsModal -->
+{% endblock %}

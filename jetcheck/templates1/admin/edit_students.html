@@ -1,0 +1,98 @@
+{% extends 'admin/base.html' %}
+{% block body %}
+<div class="row py-3">
+    <div class="col-12 d-flex">
+        <h3>{{ title }}</h3>
+        <div class="ms-auto">
+            <span class="material-icons-round icon rounded-5"
+                onclick="window.location.href = `{{url_for('admin.all_students')}}`">
+                people
+            </span>
+        </div>
+    </div>
+    <div class="hr"></div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <form action="" method="post">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdFirstName" style="color: var(--fonts-color);">
+                            First Name <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="text" name="stdFirstName" id="stdFirstName"
+                            placeholder="Ahmad Ali" value="{{student.first_name}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdLastName" style="color: var(--fonts-color);">
+                            Last Name <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="text" name="stdLastName" id="stdLastName"
+                            placeholder="Khan" value="{{student.last_name}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdEmail" style="color: var(--fonts-color);">
+                            Email <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="email" name="stdEmail" id="stdEmail"
+                            placeholder="alikhan@wss.com" value="{{student.email}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdContact" style="color: var(--fonts-color);">
+                            Contact <span class="text-danger"></span>
+                        </label>
+                        <input class="form-control" type="text" name="stdContact" id="stdContact"
+                            placeholder="+923XXXXXXXXXXXXXXXXXX" value="{{student.contact}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdInitialDate" style="color: var(--fonts-color);">
+                            Initial Date <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="date" name="stdInitialDate" id="stdInitialDate" value="{{student.start_date}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdExpireDate" style="color: var(--fonts-color);">
+                            Expire Date <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="date" name="stdExpireDate" id="stdExpireDate" value="{{student.end_date}}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdAccountStatus" style="color: var(--fonts-color);">
+                            Account Status
+                        </label>
+                        <select class="select" name="stdAccountStatus" id="stdAccountStatus">
+                            {% if student.account_sts == 0 %}
+                            <option value="0" selected>Locked</option>
+                            <option value="1" >Open</option>
+                            <option value="2" >Closed</option>
+                            {% elif student.account_sts == 1 %}
+                            <option value="0">Locked</option>
+                            <option value="1" selected>Open</option>
+                            <option value="2">Closed</option>
+                            {% else %}
+                            <option value="0">Locked</option>
+                            <option value="1">Open</option>
+                            <option value="2" selected>Closed</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 mt-3">
+                        <label for="stdInstructor" style="color: var(--fonts-color);">
+                            Instructor <span class="text-danger">*</span>
+                        </label>
+                        <select class="select" name="stdInstructor" id="stdInstructor" required>
+                            <!-- <option value="">-- SELECT INSTRUCTOR --</option> -->
+                            <option value="{{student.instructor.id}}" selected>{{student.instructor.first_name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="submit" type="submit" class="btn btn-lg btn-primary btn-block mt-4">
+                    update Student
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- fileDetailsModal -->
+{% endblock %}

@@ -1,0 +1,75 @@
+:root{
+    --white-rgb: 255, 255, 255;
+    --success-rgb: 23, 202, 104;
+    --warning-rgb: 245, 177, 75;
+}
+.tiles .tile {
+    display: block;
+    position: relative;
+    padding: 12px 20px;
+    background: linear-gradient(to right,rgb(20, 87, 230) 0%,rgb(38,143,230) 100%);
+    text-decoration: none;
+    border-radius: .3rem;
+    transition: all 300ms ease;
+    cursor: pointer;
+}
+.tiles .tile .stat {
+    margin-bottom: 30px;
+    font-size: 35px;
+    line-height: 1;
+    color: rgb(var(--white-rgb));
+    margin-top: 4px;
+}
+.tiles .tile .title {
+    transform: translateY(20px);
+    font-weight: 600;
+    color: rgb(var(--white-rgb));
+    text-transform: capitalize;
+    font-size: 15px;
+    transition: 300ms ease all;
+}
+.tiles .tile .sub-title {
+    font-size: small;
+    color: rgba(var(--white-rgb),0.55);
+    opacity: 0;
+    transition: 300ms ease all;
+}
+.tiles .tile .highlight {
+    margin-top: 4px;
+    height: 2px;
+    border-radius: 2px;
+    background-color: rgba(var(--white-rgb),0.3);
+}
+.tiles .tile span {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 30px;
+    line-height: 1;
+    color: rgb(var(--white-rgb));
+    height: 45px;
+    width: 45px;
+    background-color: rgba(var(--white-rgb),0.2);
+    border-radius: 50%;
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease;
+    /* border: 2px solid rgba(var(--primary-rgb), 0.5); */
+    box-shadow: 0 0 0 5px rgba(var(--white-rgb),0.2);
+}
+.tiles:first-child>:nth-child(3) .tile{
+    background: linear-gradient(to right,rgb(var(--success-rgb)) 0%,rgba(var(--success-rgb),0.9) 100%);
+    border: 2px solid rgba(var(--success-rgb),0.5) !important;
+}
+.tiles:first-child>:nth-child(4) .tile{
+    background: linear-gradient(to right,rgb(var(--warning-rgb)) 0%,rgba(var(--warning-rgb),0.9) 100%);
+}
+.tiles .tile:hover .title{
+    transform: translateY(0px);
+}
+.tiles .tile:hover .sub-title{
+    opacity: 1;
+    display: block !important;
+}
