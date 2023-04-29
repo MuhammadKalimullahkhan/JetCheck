@@ -24,7 +24,9 @@ from jetcheck import settings
 
 path = os.path.abspath(".")
 db = SQLAlchemy()
-app = Flask(path, template_folder="public")
+app = Flask(path, template_folder= __name__+"/public")
+
+# TODO: i removed the app.config['UPLOAD_DIR'] so add them to the instructor and student from settings 
 
 app.config['admin_password'] = "!@0345Kalim"
 
@@ -32,7 +34,7 @@ app.config['SECRET_KEY'] = KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///jetcheck.sqlite"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/jetcheck'
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=100000)
-app.config['UPLOAD_FOLDER'] =  "static/uploads/"
+app.config['UPLOAD_FOLDER'] = settings.UPLOAD_DIR
 
 from jetcheck.models import *
 from jetcheck.routes import *

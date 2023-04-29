@@ -1,5 +1,10 @@
-ROOT_UPLOAD_DIR = "static/uploads/"
-PDF_UPLOAD_DIR = "static/uploads/pdf/"
+import os
+
+
+BASE_DIR = os.path.abspath(".")
+
+UPLOAD_DIR = BASE_DIR + "/static/uploads/"
+PDF_UPLOAD_DIR = BASE_DIR + "/static/uploads/pdf/"
 
 SUPPORTED_DATE_FORMATES = [
     '%Y-%m-%d', # yyyy-mm-dd

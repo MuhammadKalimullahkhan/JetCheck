@@ -167,8 +167,7 @@ def add_teacher_assistant():
                 "to" : ta.email,
                 "link": "https://jetck.com"+ url_for("ta.create_profile", token=token)
             })
-
-            flash(f"Email has been sent to <strong>{ta.email}</strong>", "info")  
+            flash(f"Email has been sent to <strong>{ta.email}</strong>", "info")
         except Exception as e:
             print(e)
             flash(f"The email <strong>{ta.email}</strong> is added by someone else", "danger")

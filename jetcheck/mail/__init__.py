@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import flash, render_template
 from jetcheck import app
 from flask_mail import Mail, Message
 
@@ -8,7 +8,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = 'info@jetck.com'
 app.config['MAIL_PASSWORD'] = 'AoCqTl!TO,K%'
-app.config['MAIL_DEFAULT_SENDER'] = ('Jetck', 'info@jetck.com')
+app.config['MAIL_DEFAULT_SENDER'] = ('JetCheck', 'jetcheck@jetck.com')
 
 
 mail = Mail(app)
