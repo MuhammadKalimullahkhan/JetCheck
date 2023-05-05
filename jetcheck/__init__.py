@@ -11,12 +11,14 @@ from flask import (
     session,
     url_for
 )
-import jwt
+import docx2txt
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime, timedelta
+
+import ai_detector
 
 from jetcheck.auth import is_valid_password, required_tsession
 from jetcheck.secrets import KEY
@@ -170,7 +172,9 @@ def file_by_id(id):
         "size": file.size,
         "upload_date": file.upload_date,
         "aid":file.assignment_id,
-        "download_path": url_for("download_file", file_id=file.id)
+        "download_path": url_for("download_file", file_id=file.id),
+        "ai":file.ai,
+        "human":file.human_written
     })
 
 
@@ -219,6 +223,16 @@ def upload_file():
         s = wtapi.new_session()
         res = s.post(wtapi.API_FILE_INFO_URL, json=file_info.dict(), params={"token": session['instructor_token']}).json()
 
+        # detect ai content
+        text = docx2txt.process(file)
+        ai_response = ai_detector.detect(text)
+
+        # print(ai_response['data']['isHuman'])
+        # print(ai_response['data']['textWords'])
+        # print(ai_response['data']['aiWords'])
+        # print(ai_response['data']['fakePercentage'])
+        # print(ai_response['message'])
+
         file=FileList()
         assignment = Assignment.query.filter(Assignment.aid == aid).first()
         file.user_id = current_user.id
@@ -228,6 +242,8 @@ def upload_file():
         file.path = os.path.join(app.config['UPLOAD_FOLDER'],"pdf", submit_response['file_title']+".pdf")
         file.description = description
         # file.plagiarism = res['plagiarism']
+        file.ai = ai_response['data']['fakePercentage']
+        file.human_written = ai_response['data']['isHuman']
         file.upload_date = datetime.now().date()
         file.assignment_id = assignment.id
         db.session.add(file)

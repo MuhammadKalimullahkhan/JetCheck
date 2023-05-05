@@ -10,7 +10,8 @@ from jetcheck.models.turnitin import Assignment
 from jetcheck.secrets import KEY
 from jetcheck import app
 
-import wtapi, jwt, os
+import wtapi, jwt, os, docx2txt
+import ai_detector
 
 
 instructor = Blueprint("instructor", __name__, url_prefix="/instructor")
@@ -283,7 +284,11 @@ def upload_file():
         )
         s = wtapi.new_session()
         res = s.post(wtapi.API_FILE_INFO_URL, json=file_info.dict(), params={"token": session["instructor_token"]}).json()
-        print(res)
+        
+        # detect ai content
+        text = docx2txt.process(file)
+        ai_response = ai_detector.detect(text)
+
         file=FileList()
         assignment = Assignment.query.filter(Assignment.aid == aid).first()
         file.instructor_id = current_account.id
@@ -292,6 +297,8 @@ def upload_file():
         file.size = submit_response['file_size']
         file.path = os.path.join(app.config['UPLOAD_FOLDER'],"pdf", submit_response['file_title']+".pdf")
         file.description = description
+        file.ai = ai_response['data']['fakePercentage']
+        file.human_written = ai_response['data']['isHuman']
         # file.plagiarism = res['plagiarism']
         file.upload_date = datetime.now().date()
         file.assignment_id = assignment.id
@@ -300,9 +307,6 @@ def upload_file():
         db.session.commit()
         url = url_for("instructor.all_files")
         return jsonify(url=url)
-        # return jsonify(url=f"/download-file/{file.assignment_id}/{file.title}/?view=true")
-        # time.sleep(6)        
-        # return redirect(url_for('download_file', assignment_id=file.assignment_id, file_title=file.title))
     ass = Assignment.query.filter(Assignment.t_account_id == session['t_id'])
     return render_template("upload.html", title="Upload File", context={"all_assignments":ass, "account":current_account})
 
@@ -390,7 +394,9 @@ def file_by_id(id):
         "size": file.size,
         "upload_date": file.upload_date,
         "aid":file.assignment_id,
-        "download_path": url_for("instructor.download_file", file_id=file.id)
+        "download_path": url_for("instructor.download_file", file_id=file.id),
+        "ai": file.ai,
+        "human":file.human_written,
     })
 
 

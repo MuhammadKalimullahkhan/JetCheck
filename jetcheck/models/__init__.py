@@ -101,6 +101,8 @@ class FileList(db.Model):
     is_important = db.Column(db.Boolean, default=False)
     description = db.Column(db.String(1024), default="No Description")
     plagiarism = db.Column(db.Integer)
+    ai = db.Column(db.Integer)
+    human_written = db.Column(db.Integer)
     size = db.Column(db.String(10))
     upload_date = db.Column(db.Date, default=datetime.now())
 

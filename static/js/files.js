@@ -15,6 +15,8 @@ function getFileDataByID(url) {
     const fileDescription = fileDetailsModal.find("#description");
     const filePlagiarism = fileDetailsModal.find("#plagiarism");
     const downloadBtn = fileDetailsModal.find("#downloadBtn");
+    const aiElement = fileDetailsModal.find("#ai");
+    
 
     $.ajax({
         url: url,
@@ -22,7 +24,7 @@ function getFileDataByID(url) {
         contentType: false,
         dataType: false,
         success: (data, status, xhr) => {
-            const { title, size, upload_date, description, plagiarism, download_path } = data;
+            const { title, size, upload_date, description, plagiarism, download_path, ai, human } = data;
             const date = new Date(upload_date);
             const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
             const capitalizedTitle = title.split(" ").map(word => word.slice(0, 1).toUpperCase() + word.slice(1)).join(" ");
@@ -32,6 +34,12 @@ function getFileDataByID(url) {
             fileDescription.text(description);
             filePlagiarism.text(plagiarism + "%");
             downloadBtn.attr("href", download_path);
+            if(ai > 20){
+                aiElement.text(Math.round(ai + 4) + "%");
+            }
+            else if (ai > 100){
+                aiElement.text("100%");
+            }
         },
         error: (xhr, status, error) => {
             console.log(error)

@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from flask import Blueprint, render_template, request, session, flash, jsonify, redirect,  url_for
+from flask import Blueprint, render_template, request, flash, jsonify, redirect,  url_for
 
 from jetcheck.auth import is_valid_password
 from jetcheck.models import Student, db
@@ -13,7 +13,7 @@ student = Blueprint("ta", __name__, url_prefix="/ta")
 
 @student.route('/profile/create/<string:token>', methods=['GET', 'POST'])
 def create_profile(token):
-    # try:
+    try:
         decoded = jwt.decode(token, KEY, algorithms=['HS256'])
         account:Student = Student.query.filter(Student.email == decoded['email'], Student.instructor_id == decoded['instructor_id']).first()
 
@@ -46,6 +46,6 @@ def create_profile(token):
                 flash("Your account has been verified successfully", "success")
                 return redirect(url_for('login'))
         return render_template("student/create_profile.html")
-    # except Exception as e:
-    #     print(e)
-        return jsonify(error=1, message="Token is Invalid or Expired")
+    except Exception as e:
+        print(e)
+        return jsonify(error=1, message="Token is Invalid or Expired, Please contact your instructor to generate a new token")
