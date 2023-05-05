@@ -95,7 +95,7 @@ def login():
             session['user_email'] = user.email
             session['instructor_token'] = user.instructor.token[0].token
             return jsonify({"url": url_for("wtapi_login", token=session['instructor_token']) + "?next="+ url_for('index')})
-        return make_response("Login Failed", 401)
+        return jsonify(error="Invalid Email or Password")
     return render_template("login.html", title="Teacher Assistant Login")
 
 
