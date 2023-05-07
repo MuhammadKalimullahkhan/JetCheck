@@ -5,7 +5,6 @@ from flask import (
     redirect,
     request,
     jsonify,
-    make_response,
     render_template,
     send_file,
     session,
@@ -211,17 +210,20 @@ def upload_file():
             {"file": (file.filename, file.stream.read(), file.mimetype)},
             token=session['instructor_token']
             ).json()
+
+        if 'errorMessage' in submit_response:
+            return jsonify(error=submit_response['errorMessage'], url=url_for('upload_file'))
+
         file_info = wtapi.DownloadFileInfo(
             session_id=submit_file_info.session_id,
-            # file_title="TEST_MY_FILE - 55287331051630032023",
             file_title=submit_response['file_title'],
             assignment_id=aid,
         )
-        if 'errorMessage' in submit_response:
-            return jsonify(error=submit_response['errorMessage'], url=url_for('upload_file'))
         
         s = wtapi.new_session()
         res = s.post(wtapi.API_FILE_INFO_URL, json=file_info.dict(), params={"token": session['instructor_token']}).json()
+
+        print(res['plagiarism'])
 
         # detect ai content
         text = docx2txt.process(file)
