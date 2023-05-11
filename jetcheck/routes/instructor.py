@@ -10,7 +10,7 @@ from jetcheck.models.turnitin import Assignment
 from jetcheck.secrets import KEY
 from jetcheck import app
 
-import wtapi, jwt, os, docx2txt
+import wtapi, jwt, os, math, docx2txt, docx
 import ai_detector
 
 
@@ -398,6 +398,80 @@ def file_by_id(id):
         "ai": file.ai,
         "human":file.human_written,
     })
+
+
+
+
+def split_docx_file(file_path, max_chars):
+    # Load the document
+    doc = docx.Document(file_path)
+
+    # Extract the text from the document
+    text = ''
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + "\n"
+
+    # Split the text into parts based on the character count
+    num_parts = math.ceil(len(text) / max_chars)
+    parts = []
+    for i in range(num_parts):
+        start_index = i * max_chars
+        end_index = (i + 1) * max_chars
+        part_text = text[start_index:end_index]
+        parts.append(part_text)
+
+    # Create separate documents for each part
+    doc_parts = []
+    for part_text in parts:
+        part_doc = docx.Document()
+        part_doc.add_paragraph(part_text)
+        doc_parts.append(part_doc)
+
+    return doc_parts
+
+
+@instructor.route("/ai/upload", methods=["GET", "POST"])
+@required_instructor_login
+def ai_upload():
+    # TODO split the file and send it to the api
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if file == None:
+            return jsonify(error="Please select a file")
+
+        max_chars = 40000
+
+        split_docs = split_docx_file(file, max_chars)
+
+        html = []
+        ai_percentages = []
+        # Save each part as a separate document
+        for i, doc_part in enumerate(split_docs):
+            doc = doc_part
+            text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+            try:
+                ai_response = ai_detector.detect(text)
+                html.append(ai_detector.mark_changes(text, ai_response['data']['h']))
+                ai_percentages.append(ai_response['data']['fakePercentage'])
+            except Exception as e:
+                print(e)
+
+
+        ai_avg = sum(ai_percentages) / len(ai_percentages)
+
+        # detect ai content
+        # text = docx2txt.process(file)
+
+        current_user:Instructor = Instructor.query.get(int(session['instructor_id'])) 
+        return jsonify(
+            content="".join([h for h in html]),
+            user={
+                "firstName":current_user.first_name,
+                "lastName":current_user.last_name
+                },
+            ai=round(ai_avg, 2)
+            )
+    return render_template("ai_upload.html", title="AI")
 
 
 @instructor.route("/settings/", methods=["GET", "POST"])

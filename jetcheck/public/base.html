@@ -1,24 +1,27 @@
 {# VAIABLES #}
 {% if is_instructor == True %}
-{% set DASHBOARD_URL = "instructor.index" %}
-{% set ADD_TA_URL = "instructor.add_teacher_assistant" %}
-{% set ALL_TA_URL = "instructor.all_teacher_assistant" %}
-{% set ALL_FILES_URL = "instructor.all_files" %}
-{% set UPLOAD_FILE_URL = "instructor.upload_file" %}
-{% set DOWNLOAD_FILE_URL = "instructor.download_file" %}
-{% set IMPORTANT_FILE_URL = "instructor.file_important" %}
-{% set FILE_BY_ID_URL = "instructor.file_by_id" %}
-{% set LOGOUT_URL = "instructor.logout" %}
-{% set SETTINGS_URL = "instructor.settings" %}
+  {% set DASHBOARD_URL = "instructor.index" %}
+  {% set ADD_TA_URL = "instructor.add_teacher_assistant" %}
+  {% set ALL_TA_URL = "instructor.all_teacher_assistant" %}
+  {% set ALL_FILES_URL = "instructor.all_files" %}
+  {% set UPLOAD_FILE_URL = "instructor.upload_file" %}
+  {% set AI_UPLOAD_FILE_URL = "instructor.ai_upload" %}
+
+  {% set DOWNLOAD_FILE_URL = "instructor.download_file" %}
+  {% set IMPORTANT_FILE_URL = "instructor.file_important" %}
+  {% set FILE_BY_ID_URL = "instructor.file_by_id" %}
+  {% set LOGOUT_URL = "instructor.logout" %}
+  {% set SETTINGS_URL = "instructor.settings" %}
 {% else %}
-{% set ALL_FILES_URL = "all_files" %}
-{% set UPLOAD_FILE_URL = "upload_file" %}
-{% set DOWNLOAD_FILE_URL = "download_file" %}
-{% set RECENT_FILE_URL = "recent_files" %}
-{% set IMPORTANT_FILE_URL = "file_important" %}
-{% set FILE_BY_ID_URL = "file_by_id" %}
-{% set LOGOUT_URL = "user_logout" %}
-{% set SETTINGS_URL = "profile" %}
+  {% set ALL_FILES_URL = "all_files" %}
+  {% set UPLOAD_FILE_URL = "upload_file" %}
+  {% set AI_UPLOAD_FILE_URL = "ai_upload" %}
+  {% set DOWNLOAD_FILE_URL = "download_file" %}
+  {% set RECENT_FILE_URL = "recent_files" %}
+  {% set IMPORTANT_FILE_URL = "file_important" %}
+  {% set FILE_BY_ID_URL = "file_by_id" %}
+  {% set LOGOUT_URL = "user_logout" %}
+  {% set SETTINGS_URL = "profile" %}
 {% endif %}
 {# END VAIABLES #}
 
@@ -101,6 +104,7 @@
       {% endif %}
       {{ link(ALL_FILES_URL, "All Files", "folder") }}
       {{ link(UPLOAD_FILE_URL, "Upload file", "note_add") }}
+      {{ link(AI_UPLOAD_FILE_URL, "AI Checker", "note_add") }}
 
       {% if is_instructor == Flase %}
       {{ link(SETTINGS_URL, "Settings", "settings") }}

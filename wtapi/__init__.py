@@ -78,7 +78,6 @@ def download_file(save_path: str, file: DownloadFileInfo, token):
         headers={"Content-Type": "application/json"},
         params= {"token": token}
     )
-    print(res.content)
     res = json.loads(res.content)
 
     # Saving file

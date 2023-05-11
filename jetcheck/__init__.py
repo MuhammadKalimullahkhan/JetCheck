@@ -1,8 +1,10 @@
+import math
 import os
 from flask import (
     Flask,
     flash,
     redirect,
+    render_template_string,
     request,
     jsonify,
     render_template,
@@ -10,13 +12,14 @@ from flask import (
     session,
     url_for
 )
-import docx2txt
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime, timedelta
 
+import docx2txt
+import docx
 import ai_detector
 
 from jetcheck.auth import is_valid_password, required_tsession
@@ -25,9 +28,9 @@ from jetcheck import settings
 
 path = os.path.abspath(".")
 db = SQLAlchemy()
-app = Flask(path, template_folder= __name__+"/public")
+app = Flask(path, template_folder=__name__+"/public")
 
-# TODO: i removed the app.config['UPLOAD_DIR'] so add them to the instructor and student from settings 
+# TODO: i removed the app.config['UPLOAD_DIR'] so add them to the instructor and student from settings
 
 app.config['admin_password'] = "!@0345Kalim"
 
@@ -37,11 +40,12 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///jetcheck.sqlite"
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=100000)
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_DIR
 
+# from jetcheck import settings
 from jetcheck.models import *
 from jetcheck.routes import *
 from jetcheck.mail import send_email_verification_mail, generate_verification_email_html
-# from jetcheck import settings
 import wtapi
+
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -68,7 +72,8 @@ def login():
     logout_user()
     if request.method == "POST":
         data = request.get_json()
-        user: Student = Student.query.filter(Student.email == data['email']).first()
+        user: Student = Student.query.filter(
+            Student.email == data['email']).first()
         if user and user.is_verified != 1:
             return jsonify({"error": "Please verify your account"})
         if user and check_password_hash(user.password, data['password']):
@@ -78,12 +83,14 @@ def login():
                 return jsonify({"error": "Your account is locked by Instructor"})
             if user.instructor.account_sts != 1:
                 return jsonify({"error": "Your's Instructor is locked by Jetcheck Team"})
-            
+
             account_remaining_days = user.end_date - datetime.now().date()
             if account_remaining_days < timedelta(days=10):
                 if account_remaining_days.days == 1:
-                    flash(f"Your account will expired after {account_remaining_days.days} day", "warning")
-                flash(f"Your account will expired after {account_remaining_days.days} days", "warning")
+                    flash(
+                        f"Your account will expired after {account_remaining_days.days} day", "warning")
+                flash(
+                    f"Your account will expired after {account_remaining_days.days} days", "warning")
             # if user.is_logged_in:
             #     return jsonify({"error": "Student is already logged in"})
             user.last_login = datetime.now()
@@ -93,7 +100,7 @@ def login():
             login_user(user)
             session['user_email'] = user.email
             session['instructor_token'] = user.instructor.token[0].token
-            return jsonify({"url": url_for("wtapi_login", token=session['instructor_token']) + "?next="+ url_for('index')})
+            return jsonify({"url": url_for("wtapi_login", token=session['instructor_token']) + "?next=" + url_for('index')})
         return jsonify(error="Invalid Email or Password")
     return render_template("login.html", title="Teacher Assistant Login")
 
@@ -114,19 +121,19 @@ def user_logout():
 # @login_required
 def wtapi_login(token):
     next_page = request.args.get("next")
-    account:AccountDetails = AccountDetails.query.filter(
+    account: AccountDetails = AccountDetails.query.filter(
         AccountDetails.is_selected == True).first()
     if account == None:
         flash("No Selected Account Found", "danger")
         return "<script>window.history.back()</script>"
-    au = wtapi.login({"email": account.email, "password": account.password, "token":token})
+    au = wtapi.login(
+        {"email": account.email, "password": account.password, "token": token})
     session['t_sid'] = au['session-id']
     session['t_email'] = account.email
     session['t_id'] = account.id
     if next_page:
         return redirect(next_page)
     return redirect(url_for("index"))
-
 
 
 @app.route("/")
@@ -147,22 +154,40 @@ def index():
 @app.route("/ta/files/all/")
 @login_required
 def all_files():
-    important_files = FileList.query.filter(FileList.user_id == current_user.id, FileList.is_important == 1).order_by(FileList.id.desc()).all()
-    files = FileList.query.filter(FileList.user_id == current_user.id, FileList.is_important == 0).order_by(FileList.id.desc()).all()
+    important_files = FileList.query.filter(
+        FileList.user_id == current_user.id, FileList.is_important == 1).order_by(FileList.id.desc()).all()
+    files = FileList.query.filter(FileList.user_id == current_user.id,
+                                  FileList.is_important == 0).order_by(FileList.id.desc()).all()
     # return "Hello there"
-    return render_template("student/all_files.html", title="All Files", files = files, important_files=important_files)
+    return render_template("student/all_files.html", title="All Files", files=files, important_files=important_files)
 
 
 @app.route("/ta/file/<int:id>", methods=['POST'])
 @login_required
+@required_tsession
 def file_by_id(id):
-    file:FileList = FileList.query.filter(FileList.id == id, FileList.user_id == current_user.id).first()
+    file: FileList = FileList.query.filter(
+        FileList.id == id, FileList.user_id == current_user.id).first()
+    if file.plagiarism == None:
+        file_info = wtapi.DownloadFileInfo(
+            session_id=session['t_sid'],
+            file_title=file.title,
+            assignment_id=file.assignment.aid,
+        )
+
+        s = wtapi.new_session()
+        res = s.post(wtapi.API_FILE_INFO_URL, json=file_info.dict(), params={
+                     "token": session['instructor_token']}).json()
+
+        file.plagiarism = res['plagiarism'][0]
+        db.session.add(file)
+        db.session.commit()
     # student: Student = Student.query.filter(Student.id==current_user.id).first()
     if not file:
         return jsonify(error="No File Found!")
     return jsonify({
-        "id":file.id,
-        "name":file.name,
+        "id": file.id,
+        "name": file.name,
         "title": file.title,
         "path": file.path,
         "is_important": file.is_important,
@@ -170,10 +195,10 @@ def file_by_id(id):
         "plagiarism": file.plagiarism,
         "size": file.size,
         "upload_date": file.upload_date,
-        "aid":file.assignment_id,
+        "aid": file.assignment_id,
         "download_path": url_for("download_file", file_id=file.id),
-        "ai":file.ai,
-        "human":file.human_written
+        "ai": file.ai,
+        "human": file.human_written
     })
 
 
@@ -186,16 +211,16 @@ def upload_file():
         title = request.form['fileTitle'] if request.form['fileTitle'] else None
         description = request.form['fileDescription'] if request.form['fileDescription'] else None
         aid = request.form['aid']
-        
+
         if not file:
             return jsonify(error="Please select a file")
         if not title:
             return jsonify(error="Please enter Title")
-        
+
         # if not file.content_type in settings.ALLOWED_CONTENT_TYPES:
         #     print(file.content_type)
         #     return jsonify(error="Invalid file formate")
-        
+
         # std:Student  = Student.query.filter(Student.email == session['user_email']).first()
         submit_file_info = wtapi.SubmitFileInfo(
             session_id=session['t_sid'],
@@ -204,70 +229,54 @@ def upload_file():
             assignment_id=aid,
             auther_fname=current_user.first_name,
             auther_lname=current_user.last_name
-        ) 
+        )
         submit_response = wtapi.submit_file(
-            submit_file_info.dict(), 
+            submit_file_info.dict(),
             {"file": (file.filename, file.stream.read(), file.mimetype)},
             token=session['instructor_token']
-            ).json()
+        ).json()
 
         if 'errorMessage' in submit_response:
             return jsonify(error=submit_response['errorMessage'], url=url_for('upload_file'))
 
-        file_info = wtapi.DownloadFileInfo(
-            session_id=submit_file_info.session_id,
-            file_title=submit_response['file_title'],
-            assignment_id=aid,
-        )
-        
-        s = wtapi.new_session()
-        res = s.post(wtapi.API_FILE_INFO_URL, json=file_info.dict(), params={"token": session['instructor_token']}).json()
-
-        print(res['plagiarism'])
-
         # detect ai content
         text = docx2txt.process(file)
         ai_response = ai_detector.detect(text)
-
-        # print(ai_response['data']['isHuman'])
-        # print(ai_response['data']['textWords'])
-        # print(ai_response['data']['aiWords'])
-        # print(ai_response['data']['fakePercentage'])
         # print(ai_response['message'])
 
-        file=FileList()
-        assignment = Assignment.query.filter(Assignment.aid == aid).first()
+        file = FileList()
+        assignment = Assignment.query.filter(
+            Assignment.aid == int(aid)).first()
         file.user_id = current_user.id
         file.name = submit_response['file_name']
         file.title = submit_response['file_title']
         file.size = submit_response['file_size']
-        file.path = os.path.join(app.config['UPLOAD_FOLDER'],"pdf", submit_response['file_title']+".pdf")
+        file.path = os.path.join(
+            app.config['UPLOAD_FOLDER'], "pdf", submit_response['file_title']+".pdf")
         file.description = description
-        # file.plagiarism = res['plagiarism']
         file.ai = ai_response['data']['fakePercentage']
         file.human_written = ai_response['data']['isHuman']
         file.upload_date = datetime.now().date()
         file.assignment_id = assignment.id
         db.session.add(file)
         db.session.commit()
-        return jsonify(url= url_for("all_files"))
-        # time.sleep(6)        
-        # return redirect(url_for('download_file', assignment_id=file.assignment_id, file_title=file.title))
+        return jsonify(url=url_for("all_files"))
     ass = Assignment.query.filter(Assignment.t_account_id == session['t_id'])
-    return render_template("upload.html", title="Upload File", context={"all_assignments":ass})
+    return render_template("upload.html", title="Upload File", context={"all_assignments": ass})
 
 
 @app.route("/download_file/<int:file_id>/")
 @login_required
 @required_tsession
 def download_file(file_id):
-    file: FileList = FileList.query.filter(FileList.id == file_id, FileList.user_id == current_user.id).first()
+    file: FileList = FileList.query.filter(
+        FileList.id == file_id, FileList.user_id == current_user.id).first()
     if file == None:
         flash("File not found", "danger")
-        return redirect(url_for("all_files")) 
+        return redirect(url_for("all_files"))
 
     file_title = file.title
-    pdf_uploads = app.config['UPLOAD_FOLDER'] +"pdf/"
+    pdf_uploads = app.config['UPLOAD_FOLDER'] + "pdf/"
     pdf_file_path = pdf_uploads+file_title+".pdf"
     is_view = False if request.args.get("view") else True
 
@@ -277,9 +286,10 @@ def download_file(file_id):
             file_title=file_title,
             assignment_id=file.assignment.aid
         )
-        
+
         try:
-            wtapi.download_file(pdf_file_path, download_file_info, token=session['instructor_token'])
+            wtapi.download_file(pdf_file_path, download_file_info,
+                                token=session['instructor_token'])
         except Exception as e:
             print(e)
             flash("Failed: error occured while downloading, please try again.", "danger")
@@ -292,7 +302,8 @@ def download_file(file_id):
 @app.post("/delete_file/<int:file_id>")
 @login_required
 def delete_file(file_id):
-    file = FileList.query.filter(FileList.user_id == current_user.id, FileList.id == file_id).first()
+    file = FileList.query.filter(
+        FileList.user_id == current_user.id, FileList.id == file_id).first()
     if not file:
         flash("No file found", "danger")
         return redirect(url_for("all_files"))
@@ -306,12 +317,89 @@ def delete_file(file_id):
     flash("File deletion success", "success")
     return redirect(url_for("all_files"))
 
-    
+
+
+
+
+def split_docx_file(file_path, max_chars):
+    # Load the document
+    doc = docx.Document(file_path)
+
+    # Extract the text from the document
+    text = ''
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + "\n"
+
+    # Split the text into parts based on the character count
+    num_parts = math.ceil(len(text) / max_chars)
+    parts = []
+    for i in range(num_parts):
+        start_index = i * max_chars
+        end_index = (i + 1) * max_chars
+        part_text = text[start_index:end_index]
+        parts.append(part_text)
+
+    # Create separate documents for each part
+    doc_parts = []
+    for part_text in parts:
+        part_doc = docx.Document()
+        part_doc.add_paragraph(part_text)
+        doc_parts.append(part_doc)
+
+    return doc_parts
+
+
+@app.route("/ai/upload", methods=["GET", "POST"])
+@login_required
+def ai_upload():
+    # TODO split the file and send it to the api
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if file == None:
+            return jsonify(error="Please select a file")
+
+        max_chars = 40000
+
+        split_docs = split_docx_file(file, max_chars)
+
+        html = []
+        ai_percentages = []
+        # Save each part as a separate document
+        for i, doc_part in enumerate(split_docs):
+            doc = doc_part
+            text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+            try:
+                ai_response = ai_detector.detect(text)
+                html.append(ai_detector.mark_changes(text, ai_response['data']['h']))
+                ai_percentages.append(ai_response['data']['fakePercentage'])
+            except Exception as e:
+                print(e)
+
+
+        ai_avg = sum(ai_percentages) / len(ai_percentages)
+
+        # detect ai content
+        # text = docx2txt.process(file)
+
+
+        return jsonify(
+            content="".join([h for h in html]),
+            user={
+                "firstName":current_user.first_name,
+                "lastName":current_user.last_name
+                },
+            ai=round(ai_avg, 2)
+            )
+    return render_template("ai_upload.html", title="AI")
+
+
 @app.route("/file_important/<int:id>/<int:is_important>/")
 @login_required
 def file_important(id, is_important):
     is_important = True if is_important == 1 else False
-    file = FileList.query.filter(FileList.id == id, FileList.user_id == current_user.id).first()
+    file = FileList.query.filter(
+        FileList.id == id, FileList.user_id == current_user.id).first()
+    
     if file:
         file.is_important = is_important
         db.session.add(file)
@@ -401,8 +489,8 @@ with app.app_context():
     #     is_selected=True
     #    )
     # try:
-        # db.session.add(tad)
-        # db.session.add(sa)
-        # db.session.add_all([ad, u1])
-        # db.session.commit()
+    # db.session.add(tad)
+    # db.session.add(sa)
+    # db.session.add_all([ad, u1])
+    # db.session.commit()
     # except Exception as e: print(e)

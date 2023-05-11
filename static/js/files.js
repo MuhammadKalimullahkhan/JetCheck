@@ -39,6 +39,8 @@ function getFileDataByID(url) {
             }
             else if (ai > 100){
                 aiElement.text("100%");
+            }else{
+                aiElement.text(ai+"%");
             }
         },
         error: (xhr, status, error) => {

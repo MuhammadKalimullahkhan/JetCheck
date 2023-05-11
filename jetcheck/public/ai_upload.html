@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<style>
+    mark {
+        background-color: #b9c1f25c;
+        color: #b9c1f2d4;
+    }
+
+    pre {
+        font-size: 16px;
+        white-space: pre-wrap;
+        font-family: 'Poppins';
+        text-align: justify;
+    }
+    .fab{
+        position: fixed;
+        bottom: 3%;
+        right: 3%;
+    }
+    .hide-scrollbar::-webkit-scrollbar{
+        display: none;
+    }
+    @media print {
+
+        body,
+        mark {
+            background-color: white;
+            color: black;
+        }
+
+        mark {
+            background-color: #b9c1f25c;
+        }
+
+        .hide-on-print,
+        .navbar,
+        .side-bar {
+            display: none;
+        }
+        .show-on-print{
+            display: block !important;
+        }
+    }
+</style>
+
+<div class="col-12 d-flex" id="aiContentHeader">
+    <h5 class="hide-on-print">{{title}}</h5>
+</div>
+<div class="hr mb-4"></div>
+<div class="d-flex align-items-center flex-column">
+    <pre id="aiContent" class="hide-scrollbar"></pre>
+    <form class="w-50" id='fileUploadForm' enctype='multipart/form-data' method="post"
+        action="{{url_for( AI_UPLOAD_FILE_URL )}}">
+        <div class="upload-file rounded-4 w-100" id="fileUploadArea">
+            <img src="/static/images/icons/jetcheckFileIcon.svg" width="70" alt="">
+            <span class="text-14">Drag & Drop or Click to Browse File</span>
+            <input type='file' name="file" id='fileInput' hidden>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4 mt-3">
+            <button class="btn btn-primary btn-block" style="height: 60px;" onclick="submitForm">Submit File</button>
+        </div>
+    </form>
+</div>
+
+<button class="btn btn-primary fab hide-on-print d-none" onclick="window.print()" id="printBtn">Print</button>
+
+<script src="/static/js/upload.js"></script>
+<!-- <script src="/static/js/ai_upload.js"></script> -->
+
+{% endblock %}

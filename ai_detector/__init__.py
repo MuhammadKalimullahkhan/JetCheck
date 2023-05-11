@@ -27,11 +27,13 @@ def detect(input_text) -> dict:
         'input_text': input_text,
     }
 
-    return requests.post('https://api.zerogpt.com/api/detect/detectText', cookies=cookies, headers=headers, json=json_data).json()
+    res = requests.post('https://api.zerogpt.com/api/detect/detectText', cookies=cookies, headers=headers, json=json_data)
+    print(res.url)
+    return res.json()
 
 
-def mark_changes(input_text, chaged_sentances: list):
+def mark_changes(input_text: str, chaged_sentances: list):
     replaced_text = input_text
     for i in chaged_sentances:
         replaced_text = replaced_text.replace(i, f"<mark>{i}</mark>")
-    return "<style>mark{background-color:#b9eaf2}</style>" + f"<pre>{replaced_text}</pre>"
+    return replaced_text
