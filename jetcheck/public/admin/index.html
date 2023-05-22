@@ -1,12 +1,8 @@
 {% extends 'admin/base.html' %}
 {% block body %}
 
-<div class="row py-3">
-    <div class="col-12 d-flex">
-        <h3>{{ title }}</h3>
-    </div>
-    <div class="hr"></div>
-</div>
+{{ labels(url_for('admin.settings'), "settings") }}
+
 <div class="row">
     {% set urls = [url_for('admin.all_students'), url_for('admin.all_instructors')] %}
     {% set labels = ["Teacher Assistant", "Instructor"] %}

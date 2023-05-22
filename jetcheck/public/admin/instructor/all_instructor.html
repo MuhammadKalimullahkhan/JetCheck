@@ -1,17 +1,7 @@
 {% extends 'admin/base.html' %}
 {% block body %}
-<div class="row py-3">
-    <div class="col-12 d-flex">
-        <h3>{{ title }}</h3>
-        <div class="ms-auto">
-            <span class="material-icons-round icon rounded-5"
-                onclick="window.location.href = `{{url_for('admin.add_instructors')}}`">
-                person_add
-            </span>
-        </div>
-    </div>
-    <div class="hr"></div>
-</div>
+
+{{ labels(url_for('admin.add_instructors'), "person_add") }}
 <div class="row">
     {% if data['accounts'][0] | length <= 0 %} <div class="alert alert-info">
         No Data Found
