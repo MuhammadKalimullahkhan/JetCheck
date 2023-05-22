@@ -31,7 +31,7 @@
   </div>
   <!-- ENDMACROS -->
   <div class="d-flex" style="min-height: 100vh; position: relative;">
-    <div class="side-bar">
+    <div class="side-bar admin">
       <div class="logo mt-3">
         <img src="/static/images/icons/icon.png" class="w-50" alt="MDB Logo" />
       </div>
@@ -62,26 +62,35 @@
         </a>
       </div> -->
 
-      <!-- Avatar -->
-      <div class="dropdown mt-auto mx-auto">
-        <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar"
-          role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-          <img src="/static/images/icons/jetcheckFileIcon.svg" class="rounded-circle" height="25"
-            alt="Black and White Portrait of a Man" loading="lazy" />
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end dark-bg" aria-labelledby="navbarDropdownMenuAvatar">
-          <li>
-            <!-- <a class="dropdown-item" href="{{ url_for('profile')}}">My profile</a> -->
-          </li>
-          <li>
-            <a class="dropdown-item" href="{{ url_for('admin.settings') }}">Settings</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="{{ url_for('admin.logout')}}">Logout</a>
-          </li>
-        </ul>
+      <div class="mt-auto d-flex align-items-center justify-content-around">
+
+        <!-- Avatar -->
+        <div class="dropdown">
+          <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar"
+            role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <img src="/static/images/icons/jetcheckFileIcon.svg" class="rounded-circle" height="25"
+              alt="Black and White Portrait of a Man" loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end dark-bg" aria-labelledby="navbarDropdownMenuAvatar">
+            <li>
+              <!-- <a class="dropdown-item" href="{{ url_for('profile')}}">My profile</a> -->
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('admin.settings') }}">Settings</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('admin.logout')}}">Logout</a>
+            </li>
+          </ul>
+        </div>
+        <!-- Theme Toggle Button -->
+        <span id="themeToggler" class="active cursor-pointer">
+          <span class="material-icons-round">
+            nightlight
+          </span>
+        </span>
+        <!-- <div class="sidebar-item-indicator"></div> -->
       </div>
-      <!-- <div class="sidebar-item-indicator"></div> -->
     </div>
 
     <div class="position-fixed d-flex align-items-center justify-content-center"
@@ -89,15 +98,15 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert" data-mdb-autohide="true"
-        data-mdb-delay="3000">
+      <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert"
+        data-mdb-autohide="true" data-mdb-delay="3000">
         {{ message | safe}}
       </div>
       {% endfor %}
       {% endif %}
       {% endwith %}
     </div>
-    
+
     <div class="container-fluid pb-3">
       {% block body%}{% endblock %}
       <!-- <img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/images/bars.svg" style="position: absolute; left: 50%;top: 50%;"> -->
@@ -115,6 +124,7 @@
     crossorigin="anonymous"></script>
 
   <script src="/static/mdb5/js/mdb.min.js"></script>
+  <script src="/static/js/theme.js"></script>
 
   <script>
     const loadingScreen = document.querySelector(".loading-screen");
@@ -139,9 +149,9 @@
     integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    {% block script %} {% endblock script %}
+  {% block script %} {% endblock script %}
 
-    
+
 </body>
 
 </html>

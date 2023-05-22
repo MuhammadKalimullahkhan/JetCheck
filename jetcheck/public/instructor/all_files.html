@@ -24,7 +24,7 @@
                             </a>
                         </div>
                         <div class="dropdown">
-                            <a class="dropdown-toggle d-flex align-items-center hidden-arrow text-light" href="#"
+                            <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                                 id="fileActionMenu" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                                 <span class="material-icons-round">
                                     more_vert
@@ -111,13 +111,13 @@
                         <div class="badge badge-danger me-auto">new</div>
                         {% endif %}
                         <div class="dropdown">
-                            <a class="dropdown-toggle d-flex align-items-center hidden-arrow text-light" href="#"
+                            <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                                 id="fileActionMenu" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                                 <span class="material-icons-round">
                                     more_vert
                                 </span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end dark-bg" aria-labelledby="fileActionMenu">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="fileActionMenu">
                                 <li>
                                     <a class="dropdown-item d-flex"
                                         href="{{url_for(IMPORTANT_FILE_URL, id=file.id, is_important=1)}}">
@@ -193,7 +193,7 @@
                             <table class="table table-hover table-primary table-striped">
                                 <thead>
                                     <tr>
-                                        <!-- <th>Plagiarism</th> -->
+                                        <th>Plagiarism</th>
                                         <th>AI</th>
                                         <th>Size</th>
                                         <th>Upload Date</th>
@@ -201,7 +201,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <!-- <td>None</td> -->
+                                        <td id="plagiarism">Wait...</td>
                                         <td id="ai">Wait...</td>
                                         <td id="size">Wait...</td>
                                         <td id="uploadDate">Wait...</td>
@@ -217,7 +217,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer dark-bg border-0">
+            <div class="modal-footer border-0" style="background-color: var(--primary-color);">
                 <div class="hr"></div>
                 <a href="#" class="btn btn-primary" id="downloadBtn">Download</a>
                 <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">

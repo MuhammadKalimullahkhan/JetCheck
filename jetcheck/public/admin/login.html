@@ -35,7 +35,7 @@
       {% endwith %}
     </div>
     <div class="login">
-        <div class="login-left-section w-50 py-5 mx-auto bg-light rounded-4 shadow-4">
+        <div class="login-left-section w-50 w-lg-100 py-5 mx-auto bg-light rounded-4 shadow-4">
             <h3 class="text-center text-primary mb-4">
                 <strong>SUPERADMIN LOGIN</strong>
             </h3>
@@ -58,9 +58,10 @@
                 <button id="submit" type="submit" class="btn btn-lg btn-primary btn-block mt-4">
                     sign In
                 </button>
-                <div class="col-12 mt-4 d-flex align-items-center">
-                    <a href="{{ url_for('login') }}" class="btn btn-success w-100 me-2">Login as TA</a>
-                    <a href="{{ url_for('instructor.login') }}" class="btn btn-success w-100 btn-block">Login as Instructor</a>
+                <div class="mt-4 mb-2 text-muted">Login as</div>
+                <div class="col-12 d-flex align-items-center">
+                    <a href="{{ url_for('login') }}" class="btn btn-success w-100 me-2">TA</a>
+                    <a href="{{ url_for('instructor.login') }}" class="btn btn-success w-100 btn-block">Instructor</a>
                 </div>
             </form>
         </div>

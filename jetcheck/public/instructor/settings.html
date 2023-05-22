@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="row py-3">
-    <div class="col-12 d-flex">
-        <h3>{{ title }}</h3>
-    </div>
-    <div class="hr"></div>
+<div class="row">
+    {{ labels() }}
+  <div class="hr mb-4"></div>
 </div>
 <div class="row">
     <div class="col-12" id="profile">

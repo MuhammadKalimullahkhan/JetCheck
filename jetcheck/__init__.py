@@ -17,7 +17,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime, timedelta
 
-import docx2txt
 import docx
 import ai_detector
 
@@ -29,17 +28,13 @@ path = os.path.abspath(".")
 db = SQLAlchemy()
 app = Flask(path, template_folder=__name__+"/public")
 
-# TODO: i removed the app.config['UPLOAD_DIR'] so add them to the instructor and student from settings
-
 app.config['admin_password'] = "!@0345Kalim"
 
 app.config['SECRET_KEY'] = KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///jetcheck.sqlite"
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/jetcheck'
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=100000)
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_DIR
 
-# from jetcheck import settings
 from jetcheck.models import *
 from jetcheck.routes import *
 from jetcheck.mail import send_email_verification_mail, generate_verification_email_html
@@ -60,9 +55,6 @@ app.register_blueprint(student_blueprint)
 @login_manager.user_loader
 def load_user(user_id):
     user = Student.query.get(user_id)
-    # if user.is_logged_in and datetime.now() - user.last_login > app.config['REMEMBER_COOKIE_DURATION']:
-    #     user.is_logged_in = False
-    #     db.session.commit()
     return user
 
 
@@ -117,7 +109,6 @@ def user_logout():
 
 
 @app.route("/wtapi/login/<string:token>/")
-# @login_required
 def wtapi_login(token):
     next_page = request.args.get("next")
     account: AccountDetails = AccountDetails.query.filter(
@@ -146,7 +137,6 @@ def home():
 @app.route("/ta/")
 @login_required
 def index():
-    # return render_template("base.html", title="index")
     return redirect(url_for("all_files"))
 
 
@@ -157,7 +147,6 @@ def all_files():
         FileList.user_id == current_user.id, FileList.is_important == 1).order_by(FileList.id.desc()).all()
     files = FileList.query.filter(FileList.user_id == current_user.id,
                                   FileList.is_important == 0).order_by(FileList.id.desc()).all()
-    # return "Hello there"
     return render_template("student/all_files.html", title="All Files", files=files, important_files=important_files)
 
 
@@ -181,7 +170,6 @@ def file_by_id(id):
         file.plagiarism = res['plagiarism'][0]
         db.session.add(file)
         db.session.commit()
-    # student: Student = Student.query.filter(Student.id==current_user.id).first()
     if not file:
         return jsonify(error="No File Found!")
     return jsonify({
@@ -216,11 +204,6 @@ def upload_file():
         if not title:
             return jsonify(error="Please enter Title")
 
-        # if not file.content_type in settings.ALLOWED_CONTENT_TYPES:
-        #     print(file.content_type)
-        #     return jsonify(error="Invalid file formate")
-
-        # std:Student  = Student.query.filter(Student.email == session['user_email']).first()
         submit_file_info = wtapi.SubmitFileInfo(
             session_id=session['t_sid'],
             file_name=file.filename,
@@ -239,9 +222,22 @@ def upload_file():
             return jsonify(error=submit_response['errorMessage'], url=url_for('upload_file'))
 
         # detect ai content
-        text = docx2txt.process(file)
-        ai_response = ai_detector.detect(text)
-        # print(ai_response['message'])
+        max_chars = 40000
+        split_docs = split_docx_file(file, max_chars)
+        html = []
+        ai_percentages = []
+        
+        # Save each part as a separate document
+        for i, doc_part in enumerate(split_docs):
+            doc = doc_part
+            text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+            try:
+                ai_response = ai_detector.detect(text)
+                html.append(ai_detector.mark_changes(text, ai_response['data']['h']))
+                ai_percentages.append(ai_response['data']['fakePercentage'])
+            except Exception as e:
+                print(e)
+        ai_avg = sum(ai_percentages) / len(ai_percentages)
 
         file = FileList()
         assignment = Assignment.query.filter(
@@ -253,8 +249,7 @@ def upload_file():
         file.path = os.path.join(
             app.config['UPLOAD_FOLDER'], "pdf", submit_response['file_title']+".pdf")
         file.description = description
-        file.ai = ai_response['data']['fakePercentage']
-        file.human_written = ai_response['data']['isHuman']
+        file.ai = round(ai_avg, 2)
         file.upload_date = datetime.now().date()
         file.assignment_id = assignment.id
         db.session.add(file)
@@ -293,8 +288,6 @@ def download_file(file_id):
             print(e)
             flash("Failed: error occured while downloading, please try again.", "danger")
             return redirect(url_for("wtapi_login", token=current_user.instructor.token[0].token))
-        #     return {"error": f"{e}"}
-    # return ""
     return send_file(pdf_file_path, as_attachment=is_view)
 
 
@@ -315,9 +308,6 @@ def delete_file(file_id):
         flash('Error while deleting a file')
     flash("File deletion success", "success")
     return redirect(url_for("all_files"))
-
-
-
 
 
 def split_docx_file(file_path, max_chars):
@@ -351,7 +341,6 @@ def split_docx_file(file_path, max_chars):
 @app.route("/ai/upload", methods=["GET", "POST"])
 @login_required
 def ai_upload():
-    # TODO split the file and send it to the api
     if request.method == 'POST':
         file = request.files.get('file')
         if file == None:
@@ -376,10 +365,6 @@ def ai_upload():
 
 
         ai_avg = sum(ai_percentages) / len(ai_percentages)
-
-        # detect ai content
-        # text = docx2txt.process(file)
-
 
         return jsonify(
             content="".join([h for h in html]),

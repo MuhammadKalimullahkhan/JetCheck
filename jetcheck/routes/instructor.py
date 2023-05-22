@@ -10,7 +10,7 @@ from jetcheck.models.turnitin import Assignment
 from jetcheck.secrets import KEY
 from jetcheck import app
 
-import wtapi, jwt, os, math, docx2txt, docx
+import wtapi, jwt, os, math, docx
 import ai_detector
 
 
@@ -286,8 +286,22 @@ def upload_file():
         res = s.post(wtapi.API_FILE_INFO_URL, json=file_info.dict(), params={"token": session["instructor_token"]}).json()
         
         # detect ai content
-        text = docx2txt.process(file)
-        ai_response = ai_detector.detect(text)
+        max_chars = 40000
+        split_docs = split_docx_file(file, max_chars)
+        html = []
+        ai_percentages = []
+        
+        # Save each part as a separate document
+        for i, doc_part in enumerate(split_docs):
+            doc = doc_part
+            text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+            try:
+                ai_response = ai_detector.detect(text)
+                html.append(ai_detector.mark_changes(text, ai_response['data']['h']))
+                ai_percentages.append(ai_response['data']['fakePercentage'])
+            except Exception as e:
+                print(e)
+        ai_avg = sum(ai_percentages) / len(ai_percentages)
 
         file=FileList()
         assignment = Assignment.query.filter(Assignment.aid == aid).first()
@@ -297,9 +311,8 @@ def upload_file():
         file.size = submit_response['file_size']
         file.path = os.path.join(app.config['UPLOAD_FOLDER'],"pdf", submit_response['file_title']+".pdf")
         file.description = description
-        file.ai = ai_response['data']['fakePercentage']
-        file.human_written = ai_response['data']['isHuman']
-        # file.plagiarism = res['plagiarism']
+        file.ai = round(ai_avg, 2)
+        # file.human_written = ai_response['data']['isHuman']
         file.upload_date = datetime.now().date()
         file.assignment_id = assignment.id
         # current_account.file_list = file
@@ -380,6 +393,20 @@ def file_important(id, is_important):
 @required_instructor_login
 def file_by_id(id):
     file:FileList = FileList.query.filter(FileList.id == id, FileList.instructor_id == session['instructor_id']).first()
+    if file.plagiarism == None:
+        file_info = wtapi.DownloadFileInfo(
+            session_id=session['t_sid'],
+            file_title=file.title,
+            assignment_id=file.assignment.aid,
+        )
+
+        s = wtapi.new_session()
+        res = s.post(wtapi.API_FILE_INFO_URL, json=file_info.dict(), params={
+                     "token": session['instructor_token']}).json()
+
+        file.plagiarism = res['plagiarism'][0]
+        db.session.add(file)
+        db.session.commit()
     # student: Student = Student.query.filter(Student.id==current_user.id).first()
     if not file:
         return jsonify(error="No File Found!")
@@ -458,9 +485,6 @@ def ai_upload():
 
 
         ai_avg = sum(ai_percentages) / len(ai_percentages)
-
-        # detect ai content
-        # text = docx2txt.process(file)
 
         current_user:Instructor = Instructor.query.get(int(session['instructor_id'])) 
         return jsonify(

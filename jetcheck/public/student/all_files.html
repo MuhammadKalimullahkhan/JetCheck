@@ -2,21 +2,7 @@
 {% block body %}
 
 <div class="row">
-    <div class="col-12 d-flex">
-        <h5>All Files</h5>
-        <div class="ms-auto cursor-pointer text-light-2">
-            <span class="material-icons-round icon rounded-5"
-                onclick="window.location.href = `{{url_for('upload_file')}}`">
-                upload_file
-            </span>
-            <!-- <span class="material-icons-round icon rounded-5">
-                label_important
-            </span>
-            <span class="material-icons-round icon rounded-5" id="search-btn">
-                search
-            </span> -->
-        </div>
-    </div>
+    {{ labels() }}
     <div class="hr mb-4"></div>
     <div class="col-12">
         {% if current_user.files | length <= 0 %} 
@@ -46,13 +32,13 @@
                                     </div>
 
                                     <div class="dropdown">
-                                        <a class="dropdown-toggle d-flex align-items-center hidden-arrow text-light" href="#"
+                                        <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                                             id="fileActionMenu" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                                             <span class="material-icons-round">
                                                 more_vert
                                             </span>
                                         </a>
-                                        <ul class="dropdown-menu dropdown-menu-end dark-bg" aria-labelledby="fileActionMenu">
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="fileActionMenu">
                                             <li>
                                                 <a class="dropdown-item d-flex"
                                                     href="{{url_for('file_important', id=file.id, is_important=0)}}">
@@ -127,13 +113,13 @@
                                     </div>
 
                                     <div class="dropdown">
-                                        <a class="dropdown-toggle d-flex align-items-center hidden-arrow text-light" href="#"
+                                        <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                                             id="fileActionMenu" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                                             <span class="material-icons-round">
                                                 more_vert
                                             </span>
                                         </a>
-                                        <ul class="dropdown-menu dropdown-menu-end dark-bg" aria-labelledby="fileActionMenu">
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="fileActionMenu">
                                             <li>
                                                 <a class="dropdown-item d-flex"
                                                     href="{{url_for('file_important', id=file.id, is_important=1)}}">

@@ -1,27 +1,29 @@
 {# VAIABLES #}
 {% if is_instructor == True %}
-  {% set DASHBOARD_URL = "instructor.index" %}
-  {% set ADD_TA_URL = "instructor.add_teacher_assistant" %}
-  {% set ALL_TA_URL = "instructor.all_teacher_assistant" %}
-  {% set ALL_FILES_URL = "instructor.all_files" %}
-  {% set UPLOAD_FILE_URL = "instructor.upload_file" %}
-  {% set AI_UPLOAD_FILE_URL = "instructor.ai_upload" %}
+{% set DASHBOARD_URL = "instructor.index" %}
+{% set ADD_TA_URL = "instructor.add_teacher_assistant" %}
+{% set ALL_TA_URL = "instructor.all_teacher_assistant" %}
+{% set ALL_FILES_URL = "instructor.all_files" %}
+{% set UPLOAD_FILE_URL = "instructor.upload_file" %}
+{% set AI_UPLOAD_FILE_URL = "instructor.ai_upload" %}
+{% set TA = "" %}
 
-  {% set DOWNLOAD_FILE_URL = "instructor.download_file" %}
-  {% set IMPORTANT_FILE_URL = "instructor.file_important" %}
-  {% set FILE_BY_ID_URL = "instructor.file_by_id" %}
-  {% set LOGOUT_URL = "instructor.logout" %}
-  {% set SETTINGS_URL = "instructor.settings" %}
+{% set DOWNLOAD_FILE_URL = "instructor.download_file" %}
+{% set IMPORTANT_FILE_URL = "instructor.file_important" %}
+{% set FILE_BY_ID_URL = "instructor.file_by_id" %}
+{% set LOGOUT_URL = "instructor.logout" %}
+{% set SETTINGS_URL = "instructor.settings" %}
 {% else %}
-  {% set ALL_FILES_URL = "all_files" %}
-  {% set UPLOAD_FILE_URL = "upload_file" %}
-  {% set AI_UPLOAD_FILE_URL = "ai_upload" %}
-  {% set DOWNLOAD_FILE_URL = "download_file" %}
-  {% set RECENT_FILE_URL = "recent_files" %}
-  {% set IMPORTANT_FILE_URL = "file_important" %}
-  {% set FILE_BY_ID_URL = "file_by_id" %}
-  {% set LOGOUT_URL = "user_logout" %}
-  {% set SETTINGS_URL = "profile" %}
+{% set TA = "ta" %}
+{% set ALL_FILES_URL = "all_files" %}
+{% set UPLOAD_FILE_URL = "upload_file" %}
+{% set AI_UPLOAD_FILE_URL = "ai_upload" %}
+{% set DOWNLOAD_FILE_URL = "download_file" %}
+{% set RECENT_FILE_URL = "recent_files" %}
+{% set IMPORTANT_FILE_URL = "file_important" %}
+{% set FILE_BY_ID_URL = "file_by_id" %}
+{% set LOGOUT_URL = "user_logout" %}
+{% set SETTINGS_URL = "profile" %}
 {% endif %}
 {# END VAIABLES #}
 
@@ -45,6 +47,8 @@
   <link rel="stylesheet" href="/static/mdb5/css/core.min.css" />
   <!-- <link rel="stylesheet" href="/static/mdb5/css/mdb.min.css" /> -->
   <link rel="stylesheet" href="/static/css/style.css" />
+  <script src="/static/js/theme.js"></script>
+
 </head>
 
 <body id="content">
@@ -56,20 +60,32 @@
   {% endmacro %}
 
   {% macro labels() %}
-  <div class="col-12 d-flex">
-    <h5>{{title}}</h5>
-    <div class="ms-auto cursor-pointer text-light-2">
-      <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_FILES_URL)}}`">
-        upload_file
-      </span>
-      <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ADD_TA_URL)}}`">
-        person_add
-      </span>
-      <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_TA_URL)}}`">
-        groups
-      </span>
+    {% if is_instructor == True %}
+      <div class="col-12 d-flex" id="aiContentHeader">
+        <h5>{{title}}</h5>
+        <button id="sideBarToggle" class="d-block d-lg-none ms-auto">
+          <span class="material-icons-round">menu</span>
+        </button>
+        <div class="ms-auto cursor-pointer text-light-2 d-none d-lg-block">
+          <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_FILES_URL)}}`">
+            upload_file
+          </span>
+          <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ADD_TA_URL)}}`">
+            person_add
+          </span>
+          <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_TA_URL)}}`">
+            groups
+          </span>
+        </div>
+      </div>
+    {% else %}
+    <div class="col-12 d-flex" id="aiContentHeader">
+      <h5>{{title}}</h5>
+      <button id="sideBarToggle" class="d-block d-lg-none ms-auto">
+        <span class="material-icons-round">menu</span>
+      </button>
     </div>
-  </div>
+    {% endif %}
   {% endmacro %}
 
   {% macro link(url, name, icon) %}
@@ -90,9 +106,9 @@
   {% if is_instructor == Flase %}
   {% include "navbar.html" %}
   {% endif %}
-  
-  <div class="d-flex" style="min-height: 100vh;position: relative;">
-    <div class="side-bar">
+
+  <div class="d-flex" style="min-height: 100vh;">
+    <div class="side-bar {{ TA }}">
       <div class="logo mt-3">
         <img src="/static/images/icons/icon.png" class="w-50" alt="MDB Logo" />
       </div>
@@ -109,34 +125,37 @@
       {% if is_instructor == Flase %}
       {{ link(SETTINGS_URL, "Settings", "settings") }}
       {% endif %}
-      <!-- <div class="side-bar-item {{is_active('index')}}">
-        <a href="{{url_for('upload_file')}}">
-          <i class="material-icons-round">notifications</i>
-          <span>notifi</span>
-        </a>
-      </div> -->
       <div class="mt-5"></div>
 
-      <!-- Avatar -->
-      <div class="dropdown mt-auto mx-auto mb-3">
-        <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar"
-          role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-          <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" class="rounded-circle" height="25"
-            alt="Black and White Portrait of a Man" loading="lazy" />
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end dark-bg" aria-labelledby="navbarDropdownMenuAvatar">
-          <li>
-            <a class="dropdown-item" href="{{ url_for(SETTINGS_URL)}}/#profile">My profile</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="{{ url_for(SETTINGS_URL)}}">Settings</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="{{ url_for(LOGOUT_URL)}}">Logout</a>
-          </li>
-        </ul>
+      <div class="mt-auto d-flex align-items-center justify-content-around">
+        <!-- Avatar -->
+        <div class="dropdown">
+          <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar"
+            role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" class="rounded-circle" height="25"
+              alt="Black and White Portrait of a Man" loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end dark-bg" aria-labelledby="navbarDropdownMenuAvatar">
+            <li>
+              <a class="dropdown-item" href="{{ url_for(SETTINGS_URL)}}/#profile">My profile</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for(SETTINGS_URL)}}">Settings</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for(LOGOUT_URL)}}">Logout</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Theme Toggle Button -->
+        <span id="themeToggler" class="active cursor-pointer" style="transform: translateY(5px);">
+          <button class="material-icons-round bg-transparent border-0">
+            nightlight
+          </button>
+        </span>
       </div>
-      <!-- <div class="sidebar-item-indicator"></div> -->
+
     </div>
 
     <div class="position-fixed d-flex align-items-center justify-content-center"
@@ -144,8 +163,8 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert" data-mdb-autohide="true"
-        data-mdb-delay="3000">
+      <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert"
+        data-mdb-autohide="true" data-mdb-delay="3000">
         {{ message | safe}}
       </div>
       {% endfor %}
@@ -153,10 +172,8 @@
       {% endwith %}
     </div>
 
-    <div class="container pb-3 mt-4">
+    <div class="container-fluid px-4 pb-3 mt-4 main-content">
       {% block body%}{% endblock %}
-      <!-- <img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/images/bars.svg" style="position: absolute; left: 50%;top: 50%;"> -->
-      <!-- HTML WILL LOAD HERE -->
     </div>
   </div>
 
@@ -168,44 +185,23 @@
     <h3>Just a moment...</h3>
   </div>
 
-  <script src="https://unpkg.com/htmx.org@1.8.6"
-    integrity="sha384-Bj8qm/6B+71E6FQSySofJOUjA/gq330vEqjFx9LakWybUySyI1IQHwPtbTU7bNwx"
-    crossorigin="anonymous"></script>
+
+  <div class="blur hide-on-print"></div>
+  <div class="blur hide-on-print"></div>
+
 
   <script src="/static/mdb5/js/mdb.min.js"></script>
 
   <script>
     const loadingScreen = document.querySelector(".loading-screen");
     loadingScreen.setAttribute("hidden", "");
-
-    var page = 1;
-
-    document.addEventListener('htmx:afterSwap', function (event) {
-      if (event.detail.elt.id == 'content') {
-        page++;
-      }
-    });
   </script>
-  <!-- <script>
-    const navItems = document.querySelectorAll(".side-bar .side-bar-item");
-    const sidebarItemIndicator = document.querySelector(".sidebar-item-indicator");
-
-    navItems.forEach((item) => {
-      item.addEventListener('click', () => {
-        navItems.forEach((i) => {
-            i.classList.remove("active");
-          })
-          item.classList.add("active");
-      })
-    })
-
-  </script> -->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
     integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    {% block script %}{% endblock script %}
+  {% block script %}{% endblock script %}
 </body>
 
 </html>

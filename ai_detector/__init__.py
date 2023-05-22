@@ -28,7 +28,6 @@ def detect(input_text) -> dict:
     }
 
     res = requests.post('https://api.zerogpt.com/api/detect/detectText', cookies=cookies, headers=headers, json=json_data)
-    print(res.url)
     return res.json()
 
 

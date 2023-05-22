@@ -44,23 +44,25 @@
     }
 </style>
 
-<div class="col-12 d-flex" id="aiContentHeader">
-    <h5 class="hide-on-print">{{title}}</h5>
-</div>
-<div class="hr mb-4"></div>
-<div class="d-flex align-items-center flex-column">
+<div class="row">
+    {{ labels() }}
+    <div class="hr mb-4"></div>
+    <div class="col-12">
+        <div class="d-flex align-items-center flex-column">
     <pre id="aiContent" class="hide-scrollbar"></pre>
-    <form class="w-50" id='fileUploadForm' enctype='multipart/form-data' method="post"
+    <form class="w-50 form" id='fileUploadForm' enctype='multipart/form-data' method="post"
         action="{{url_for( AI_UPLOAD_FILE_URL )}}">
-        <div class="upload-file rounded-4 w-100" id="fileUploadArea">
+        <div class="upload-file rounded-4 w-100 text-center" id="fileUploadArea">
             <img src="/static/images/icons/jetcheckFileIcon.svg" width="70" alt="">
-            <span class="text-14">Drag & Drop or Click to Browse File</span>
+            <span class="text-14 px-4">Drag & Drop or Click to Browse File</span>
             <input type='file' name="file" id='fileInput' hidden>
         </div>
         <div class="col-12 col-sm-12 col-md-6 col-lg-4 mt-3">
             <button class="btn btn-primary btn-block" style="height: 60px;" onclick="submitForm">Submit File</button>
         </div>
     </form>
+</div>
+    </div>
 </div>
 
 <button class="btn btn-primary fab hide-on-print d-none" onclick="window.print()" id="printBtn">Print</button>

@@ -1,7 +1,19 @@
-<nav class="navbar navbar-dark dark-bg-1">
-    <div class="container-fluid">
-      <a class="navbar-brand mx-auto font-weight-6" href="#">
-          {{ current_user.instructor.institute[0].name }}
-      </a>
-    </div>
+<style>
+  #navbarToggler {
+    z-index: 4;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+  }
+</style>
+<nav class="navbar sticky-top" id="navbar" style="z-index: 3;">
+  <div class="container-fluid">
+    <a class="navbar-brand font-weight-6 me-0" href="#">
+      {{ current_user.instructor.institute[0].name }}
+    </a>
+    <button class="d-block d-lg-none ms-auto" onclick="toggleSidebarAndNavbar()">
+      <span class="material-icons-round">clear</span>
+    </button>
+  </div>
 </nav>
+</script>

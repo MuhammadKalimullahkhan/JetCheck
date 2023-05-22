@@ -2,47 +2,49 @@
 {% block body %}
 
 
-<div class="col-12 d-flex">
-    <h5>{{title}}</h5>
-</div>
-<div class="hr mb-4"></div>
-<div class="d-flex align-items-center flex-column">
-    <form class="w-50" id='fileUploadForm' enctype='multipart/form-data' method="post"
-        action="{{url_for( UPLOAD_FILE_URL )}}">
-        <!-- <form class="upload-file rounded-4" id='fileUploadForm' hx-encoding='multipart/form-data'
-        hx-post="{{url_for( UPLOAD_FILE_URL )}}" hx-target="#resp"> -->
-        <div class="upload-file rounded-4 w-100" id="fileUploadArea">
-            <img src="/static/images/icons/jetcheckFileIcon.svg" width="70" alt="">
-            <span class="text-14">Drag & Drop or Click to Browse File</span>
-            <input type='file' name="file" id='fileInput' hidden>
+<div class="row">
+    {{ labels() }}
+    <div class="hr mb-4"></div>
+    <div class="col-12">
+        <div class="d-flex align-items-center flex-column">
+            <form class="w-50 form" id='fileUploadForm' enctype='multipart/form-data' method="post"
+                action="{{url_for( UPLOAD_FILE_URL )}}">
+                <!-- <form class="upload-file rounded-4" id='fileUploadForm' hx-encoding='multipart/form-data'
+                hx-post="{{url_for( UPLOAD_FILE_URL )}}" hx-target="#resp"> -->
+                <div class="upload-file rounded-4 w-100 text-center" id="fileUploadArea">
+                    <img src="/static/images/icons/jetcheckFileIcon.svg" width="70" alt="">
+                    <span class="text-14 px-4">Drag & Drop or Click to Browse File</span>
+                    <input type='file' name="file" id='fileInput' hidden>
+                </div>
+                <div>
+                    <div class="mt-3">
+                        <label for="fileTitle" style="color: var(--fonts-color);">File Title <span
+                                class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="fileTitle" id="fileTitle" placeholder="Final Year Thesis">
+                    </div>
+                    <div class="mt-3">
+                        <label for="aid" style="color: var(--fonts-color);">File Slot <span class="text-danger">*</span></label>
+                        <select name="aid" id="aid" class="select">
+                            {% for assignment in context['all_assignments'] %}
+                            {% if assignment.is_allowed %}
+                            <option value="{{assignment.aid}}">{{assignment.title}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mt-3">
+                        <label for="fileDescription" style="color: var(--fonts-color);">File Description</label>
+                        <textarea class="form-control" name="fileDescription" id="fileDescription" cols="30" rows="1"
+                            placeholder="Optional"></textarea>
+                        <!-- <input class="form-control" type="text" name="fileDescription" id="fileDescription" placeholder="Optional"
+                            > -->
+                    </div>
+        
+                    <button class="btn btn-primary mt-3" onclick="submitForm">Submit File</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <div class="mt-3">
-                <label for="fileTitle" style="color: var(--fonts-color);">File Title <span
-                        class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="fileTitle" id="fileTitle" placeholder="Final Year Thesis">
-            </div>
-            <div class="mt-3">
-                <label for="aid" style="color: var(--fonts-color);">File Slot <span class="text-danger">*</span></label>
-                <select name="aid" id="aid" class="select">
-                    {% for assignment in context['all_assignments'] %}
-                    {% if assignment.is_allowed %}
-                    <option value="{{assignment.aid}}">{{assignment.title}}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="mt-3">
-                <label for="fileDescription" style="color: var(--fonts-color);">File Description</label>
-                <textarea class="form-control" name="fileDescription" id="fileDescription" cols="30" rows="1"
-                    placeholder="Optional"></textarea>
-                <!-- <input class="form-control" type="text" name="fileDescription" id="fileDescription" placeholder="Optional"
-                    > -->
-            </div>
-
-            <button class="btn btn-primary mt-3" onclick="submitForm">Submit File</button>
-        </div>
-    </form>
+    </div>
 </div>
 
 <script src="/static/js/upload.js"></script>

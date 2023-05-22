@@ -55,82 +55,83 @@
             <div class="col-12 py-4 mt-2">
                 Recently Enrolled Teachers Assistant
             </div>
-            <div class="col-12">
-                {% if ta_list | length <= 0 %} <div class="alert alert-info">
-                    No Expired Accounts
-            </div>
-            {% else %}
-            <table class="table table-secondary table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Enrollment Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ta in ta_list %}
-                    <!-- <tr hx-get="{{ url_for(ALL_TA_URL) }}" hx-push-url="true" hx-target="#content"> -->
-                    <tr>
-                        <td>{{loop.index}}</td>
-                        {% if ta.is_logged_in != 0 %}
-                        <td>{{ta.first_name}}</td>
-                        <td>{{ta.last_name}}</td>
-                        {% else %}
-                        <td><span class="badge badge-warning">Not setup</span></td>
-                        <td><span class="badge badge-warning">Not setup</span></td>
-                        {% endif %}
-                        <td>{{ta.email}}</td>
-                        <td>{{ta.start_date}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
+            <div class="col-12 table-responsive">
+                {% if ta_list | length <= 0 %} 
+                    <div class="alert alert-info">
+                        No Expired Accounts
+                    </div>
+                {% else %}
+                    <table class="table table-sm table-md table-lg table-secondary table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Enrollment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ta in ta_list %}
+                            <!-- <tr hx-get="{{ url_for(ALL_TA_URL) }}" hx-push-url="true" hx-target="#content"> -->
+                            <tr>
+                                <td>{{loop.index}}</td>
+                                {% if ta.is_logged_in != 0 %}
+                                <td>{{ta.first_name}}</td>
+                                <td>{{ta.last_name}}</td>
+                                {% else %}
+                                <td><span class="badge badge-warning">Not setup</span></td>
+                                <td><span class="badge badge-warning">Not setup</span></td>
+                                {% endif %}
+                                <td>{{ta.email}}</td>
+                                <td>{{ta.start_date}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
         </div>
     </div>
     <div class="row">
         <div class="col-12 py-4 mt-2">
             Recently Expired Accounts
         </div>
-        <div class="col-12">
+        <div class="col-12 table-responsive">
             {% if exp_accounts | length <= 0 %} 
-            <div class="alert alert-info">
-                No Expired Accounts
-            </div>
-        {% else %}
-        <table class="table table-danger table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for ta in exp_accounts %}
-                <!-- <tr hx-get="{{ url_for(ALL_TA_URL) }}" hx-target="#content"> -->
-                <tr>
-                    <td>{{loop.index}}</td>
-                    {% if ta.is_logged_in != 0 %}
-                    <td>{{ta.first_name}}</td>
-                    <td>{{ta.last_name}}</td>
-                    {% else %}
-                    <td><span class="badge badge-warning">Not setup</span></td>
-                    <td><span class="badge badge-warning">Not setup</span></td>
-                    {% endif %}
-                    <td>{{ ta.email }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+                <div class="alert alert-info">
+                    No Expired Accounts
+                </div>
+            {% else %}
+                <table class="table table-sm table-md table-lg table-danger table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ta in exp_accounts %}
+                        <!-- <tr hx-get="{{ url_for(ALL_TA_URL) }}" hx-target="#content"> -->
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            {% if ta.is_logged_in != 0 %}
+                            <td>{{ta.first_name}}</td>
+                            <td>{{ta.last_name}}</td>
+                            {% else %}
+                            <td><span class="badge badge-warning">Not setup</span></td>
+                            <td><span class="badge badge-warning">Not setup</span></td>
+                            {% endif %}
+                            <td>{{ ta.email }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
 
+        </div>
     </div>
-</div>
 </div>
 </div>
 {% endblock %}
