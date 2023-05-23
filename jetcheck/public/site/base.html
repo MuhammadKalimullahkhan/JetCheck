@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetcheck</title>
+    
+    <link rel="icon" href="/static/favicon.ico">
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="/static/mdb5/css/core.min.css">
+    <link rel="stylesheet" href="/static/css/jetcheck.style.css">
+
+    <style>
+        .cursor-pointer{
+            cursor: pointer;
+        }
+        nav{
+            transition: all 400ms ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-primary navbar-dark position-sticky top-0 shadow-0" style="z-index: 1;">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Navbar brand -->
+            <a class="navbar-brand mt-2 mt-lg-0" href="/#">
+                <img src="/static/images/logo_white.png" alt="logo" loading="lazy" width="40" id="logo">
+            </a>
+
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="material-icons-round">
+                    drag_handle
+                </span>
+            </button>
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#index">index</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#our-partners">Our Partners</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-mdb-toggle="dropdown" aria-expanded="false">
+                            Help
+                        </a>
+                        <!-- Dropdown menu -->
+                        <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
+                            <span class="bg-light text-muted text-center d-block cursor-pointer">How to use</span>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for("how_to_use") }}#">Teacher Assistant</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for("how_to_use") }}#instructor">Instructor</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-mdb-toggle="dropdown" aria-expanded="false">
+                            Login
+                        </a>
+                        <!-- Dropdown menu -->
+                        <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for("login") }}">Teacher Assistant</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for("instructor.login") }}">Instructor</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- Collapsible wrapper -->
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+
+
+    {% block body %} {% endblock %}
+
+
+    
+
+    <!-- Footer -->
+    <footer class="text-center text-lg-start bg-primary text-light position-absolute w-100">
+        <!-- Section: Social media -->
+        <!-- <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+            <div>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-google"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </section> -->
+        <!-- Section: Social media -->
+
+        <!-- Section: Links  -->
+        <section id="footer">
+            <div class="container text-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mb-5 mb-lg-0">
+                        <!-- Content -->
+                        <img src="/static/images/brand_white.png" alt="logo" loading="lazy" class="w-100">
+                        
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Useful Links
+                        </h6>
+                        <p>
+                            <a href="{{ url_for("login") }}" class="text-reset">TA Login</a>
+                        </p>
+                        <p>
+                            <a href="{{ url_for("instructor.login") }}" class="text-reset">Instructor Login</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Buy an Account</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Help
+                        </h6>
+                        <p>
+                            <span class="text-reset">How to Use</span>
+                            <ul>
+                                <li>
+                                    <a href="{{ url_for("how_to_use") }}#" class="text-reset">TA</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url_for("how_to_use") }}#instructor" class="text-reset">instructor</a>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+                        <!-- <p><i class="fas fa-home me-3"></i> </p> -->
+                        <p class="d-flex c-pointer" onclick="window.location.href = `mailto:info@jetck.com`">
+                            <i class="material-icons-round me-3">
+                                mail
+                            </i>
+                            info@jetck.com
+                        </p>
+                        <p class="d-flex c-pointer" onclick="window.location.href = `#asdf`">
+                            <span class="material-icons-round me-3">
+                                perm_phone_msg
+                            </span>
+                            WhatsApp #
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+            </div>
+        </section>
+        <!-- Section: Links  -->
+
+        <hr>
+
+        <!-- Copyright -->
+        <div class="text-center bg-primary text-light p-4">
+            © 2023 Copyright
+            <a class="text-reset fw-bold" href="https://jetck.com/">Jetcheck</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+
+    <script src="/static/mdb5/js/mdb.min.js"></script>
+
+    <script>
+        window.onscroll = function() {changeNavbarOnScroll()};
+
+function changeNavbarOnScroll() {
+  if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+      document.querySelector(".navbar").classList.add("blur");
+      document.querySelector(".navbar").classList.remove("bg-primary");
+      document.querySelector(".navbar").classList.remove("navbar-dark");
+      document.querySelector("#logo").setAttribute("src", "/static/images/logo.png")
+    } else {
+        document.querySelector(".navbar").classList.add("bg-primary");
+        document.querySelector(".navbar").classList.add("navbar-dark");
+        document.querySelector(".navbar").classList.remove("blur");
+        document.querySelector("#logo").setAttribute("src", "/static/images/logo_white.png")
+  }
+}
+    </script>
+</body>
+
+</html>

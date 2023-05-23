@@ -1,0 +1,131 @@
+@import url(fonts.css);
+@import url(theme.css);
+@import url(customize.mdb.css);
+
+/* 
+    MY TAGS
+*/
+note{
+    padding: 1em;
+    position: relative;
+    display: block;
+    background-color: var(--black-05);
+}
+note::before{
+    --height: 80%;
+    content: '';
+    left: -3px;
+    top: calc((100% - var(--height)) / 2);
+    position: absolute;
+    width: 6px;
+    height: var(--height);
+    border-radius: 3px;
+    background-color: var(--black-5);
+}
+note.danger{
+    color: rgb(var(--danger-rgb));
+    background-color: rgba(var(--danger-rgb), .3);
+}
+note.danger::before{
+    background-color: rgb(var(--danger-rgb)) !important;
+}
+note.success{
+    color: rgb(var(--success-rgb));
+    background-color: rgba(var(--success-rgb), .3);
+}
+note.success::before{
+    background-color: rgb(var(--success-rgb)) !important;
+}
+note.primary{
+    color: rgb(var(--primary-rgb));
+    background-color: rgba(var(--primary-rgb), .3);
+}
+note.primary::before{
+    background-color: rgb(var(--primary-rgb)) !important;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+body {
+    background-color: var(--mdb-light);
+    font-family: "Poppins";
+}
+
+section{
+    width: 100%;
+    padding: 3rem 0;
+    /* background-color: red; */
+}
+section #index{
+    padding-top: 0px;
+    background-color: var(--mdb-primary);
+}
+
+section #title{
+    position: relative;
+    text-align: center;
+    margin-top: 2%;
+    margin-bottom: 6%;
+    /* background-color: red; */
+}
+section #title::after{
+    width: 10%;
+    height: 2px;
+    bottom: -10px;
+    left: 45%;
+    content: '';
+    position: absolute;
+    border-radius: 2px;
+    background-color: var(--mdb-primary);
+}
+
+.text-content{
+    padding: 1.5em;
+    margin-bottom: 10px;
+}
+.text-content .title{
+    line-height: 80px;
+}
+.text-content p{
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: 300;
+    text-align: justify;
+}
+.c-pointer{
+    cursor: pointer;
+}
+.card-partner{
+    border: 1px solid #0000ff00;
+    background-color: var(--mdb-light);
+    transition: all ease 300ms;
+}
+.card-partner .card-contact{
+    opacity: 0;
+    transform: translateY(0px);
+    transition: all ease 500ms;
+}
+.card-partner .card-img{
+    transition: all ease 300ms;
+}
+.card-partner:hover{
+    border: 1px solid #0000ff21;
+}
+.card-partner:hover .card-img,
+.card-partner:hover .card-contact{
+    transform: translateY(-20px);
+}
+.card-partner:hover .card-contact{
+    opacity: 1;
+}
+
+.blur{
+    backdrop-filter: blur(.5em);
+}
+
+@media only screen and (max-width: 400px) {
+    .text-content p {
+        text-align: left;
+    }
+  }

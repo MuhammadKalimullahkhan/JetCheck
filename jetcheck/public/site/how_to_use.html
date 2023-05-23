@@ -1,0 +1,209 @@
+{% extends "site/base.html" %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 pb-4">
+            <div class="row">
+                <div class="col-12">
+                    <h2>1. Teacher Assistant Account Overview</h2>
+                </div>
+                <!-- Login-->
+                <div class="col-12">
+                    <h5>Login Page</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/ta/000.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        Click <a href="{{ url_for("login") }}" target="_blank">Here</a> to login as Teacher Assistant
+                    </p>
+                </div>
+                <!-- All Files-->
+                <div class="col-12 mt-3">
+                    <h5>All Files</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/ta/001.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        In this Tab you can view, download or delete your uploaded files.
+                        <note class="danger">The deleted files can't be recovered onces deleted</note>
+                    </p>
+                </div>
+                <!-- All FilesFeature -->
+                <div class="col-12 mt-3">
+                    <h5>All Files Page</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/ta/001.1.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        If You click title <code>(like here title is 2023)</code> of your uploaded file this window will open.
+                    </p>
+                </div>
+                <!-- File Upload-->
+                <div class="col-12 mt-3">
+                    <h5>Upload File (for Plagiarism checking)</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/ta/002.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        Check plagiarism in one simple step
+                        <ul>
+                            <li>
+                                <code>Browse</code> your file
+                            </li>
+                            <li>
+                                Write <code>Title</code> for your file
+                            </li>
+                            <li>
+                                Select a <code>File Slot (File Filter)</code> to exclude reference or not etc
+                            </li>
+                            <li>Write a simple <code>description</code> (this step is optional)</li>
+                        </ul>
+                    </p>
+                </div>
+                <!-- AI File Upload-->
+                <div class="col-12 mt-3">
+                    <h5>AI Upload File</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/ta/003.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        Check AI written contents in a simple step
+                        <ul>
+                            <li>
+                                <code>Browse</code> and submit your file
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+                <!-- Profile Page -->
+                <div class="col-12 mt-3">
+                    <h5>Profile</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/ta/004.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        Click on <code>settings</code> or <code>My Profile</code> to update your profile.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12" id="instructor">
+            <div class="row">
+                <div class="col-12">
+                    <h2>2. Instructor Account Overview</h2>
+                </div>
+                <!-- Login-->
+                <div class="col-12">
+                    <h5>Login Page</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/000.jpg" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        Click <a href="{{ url_for("instructor.login") }}" target="_blank">Here</a> to login as Teacher Assistant
+                    </p>
+                </div>
+                <!-- Dashboard -->
+                <div class="col-12 mt-3">
+                    <h5>Dashboard</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/001.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        In dashboard you can see your account limit, enrolled TA and your reaming TA limit. You can also see Expired TA accounts
+                    </p>
+                </div>
+                <!-- ADD TA-->
+                <div class="col-12 mt-3">
+                    <h5>Add TA</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/002.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        In this Tab you can add a Teacher Assistant account, you can choose starting date and expiry date, after expire date TA will be not able to login
+                    </p>
+                </div>
+                <!-- Enrolled TA's -->
+                <div class="col-12 mt-3">
+                    <h5>Enrolled TA's</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/003.jpg" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        In this TAB you can see your all Enrolled TAs, you can re-send setup email if not received or setup email expired, you can edit TA profile and can delete TA account.
+                    </p>
+                </div>
+                <!-- All Files-->
+                <div class="col-12 mt-3">
+                    <h5>All Files</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/004.jpg" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        In this Tab you can view, download or delete your uploaded files.
+                        <note class="danger">The deleted files can't be recovered onces deleted</note>
+                    </p>
+                </div>
+                <!-- All FilesFeature -->
+                <div class="col-12 mt-3">
+                    <h5>All Files (Quick Report)</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/004.1.jpg" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        If You click title <code>(like here title is 'JetCheck Demo')</code> of your uploaded file this window will open.
+                    </p>
+                </div>
+                <!-- File Upload-->
+                <div class="col-12 mt-3">
+                    <h5>Upload File (for Plagiarism checking)</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/005.jpg" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        Check plagiarism in one simple step
+                        <ul>
+                            <li>
+                                <code>Browse</code> your file
+                            </li>
+                            <li>
+                                Write <code>Title</code> for your file
+                            </li>
+                            <li>
+                                Select a <code>File Slot (File Filter)</code> to exclude reference or not etc
+                            </li>
+                            <li>Write a simple <code>description</code> (this step is optional)</li>
+                        </ul>
+                    </p>
+                </div>
+                <!-- AI File Upload-->
+                <div class="col-12 mt-3">
+                    <h5>AI Upload File</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/006.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        Check AI written contents in a simple step
+                        <ul>
+                            <li>
+                                <code>Browse</code> and submit your file
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+                <!-- AI Page Report -->
+                <div class="col-12 mt-3">
+                    <h5>AI Report</h5>
+                    <div class="img-fluid">
+                        <img class="img-thumbnail" src="/static/images/site/instructor/006.1.png" alt="TA Login page" loading="lazy">
+                    </div>
+                    <p style="text-align: justify;" class="mt-3">
+                        When file uploaded for AI checking you can print it, some times print doesn’t show highlighted area then you have to go to print more setting and enable Background Graphic
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -130,12 +130,13 @@ def wtapi_login(token):
 
 
 @app.route("/")
-@login_required
 def home():
-    if "t_sid" in session:
-        return redirect(url_for("index"))
-    return redirect(url_for("wtapi_login", token=current_user.instructor.token[0].token))
+    return render_template("site/index.html")
+    # return redirect(url_for("wtapi_login", token=current_user.instructor.token[0].token))
 
+@app.route("/help/how_to_use/")
+def how_to_use():
+    return render_template("site/how_to_use.html")
 
 @app.route("/ta/")
 @login_required
