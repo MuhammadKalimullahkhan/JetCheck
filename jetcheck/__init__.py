@@ -26,7 +26,10 @@ from jetcheck import settings
 
 path = os.path.abspath(".")
 db = SQLAlchemy()
+
 app = Flask(path, template_folder=__name__+"/public")
+# FOR HOSTING
+# app = Flask(__name__, template_folder="public")
 
 app.config['admin_password'] = "!@0345Kalim"
 

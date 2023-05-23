@@ -60,32 +60,32 @@
   {% endmacro %}
 
   {% macro labels() %}
-    {% if is_instructor == True %}
-      <div class="col-12 d-flex" id="aiContentHeader">
-        <h5>{{title}}</h5>
-        <button id="sideBarToggle" class="d-block d-lg-none ms-auto">
-          <span class="material-icons-round">menu</span>
-        </button>
-        <div class="ms-auto cursor-pointer text-light-2 d-none d-lg-block">
-          <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_FILES_URL)}}`">
-            upload_file
-          </span>
-          <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ADD_TA_URL)}}`">
-            person_add
-          </span>
-          <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_TA_URL)}}`">
-            groups
-          </span>
-        </div>
-      </div>
-    {% else %}
-    <div class="col-12 d-flex" id="aiContentHeader">
-      <h5>{{title}}</h5>
-      <button id="sideBarToggle" class="d-block d-lg-none ms-auto">
-        <span class="material-icons-round">menu</span>
-      </button>
+  {% if is_instructor == True %}
+  <div class="col-12 d-flex" id="aiContentHeader">
+    <h5>{{title}}</h5>
+    <button id="sideBarToggle" class="d-block d-lg-none ms-auto">
+      <span class="material-icons-round">menu</span>
+    </button>
+    <div class="ms-auto cursor-pointer text-light-2 d-none d-lg-block">
+      <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_FILES_URL)}}`">
+        upload_file
+      </span>
+      <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ADD_TA_URL)}}`">
+        person_add
+      </span>
+      <span class="material-icons-round icon rounded-5" onclick="window.location.href = `{{url_for(ALL_TA_URL)}}`">
+        groups
+      </span>
     </div>
-    {% endif %}
+  </div>
+  {% else %}
+  <div class="col-12 d-flex" id="aiContentHeader">
+    <h5>{{title}}</h5>
+    <button id="sideBarToggle" class="d-block d-lg-none ms-auto">
+      <span class="material-icons-round">menu</span>
+    </button>
+  </div>
+  {% endif %}
   {% endmacro %}
 
   {% macro link(url, name, icon) %}
@@ -112,19 +112,24 @@
       <div class="logo mt-3">
         <img src="/static/images/icons/icon.png" class="w-50" alt="MDB Logo" />
       </div>
-      {% if is_instructor == True %}
-      {{ link(DASHBOARD_URL, "Dashboard", "dashboard") }}
-      {{ link(ADD_TA_URL, "Add TA", "person_add") }}
-      {{ link(ALL_TA_URL, "Enrolled TA's", "groups") }}
+      <div class="side-bar-content">
+        {% if is_instructor == True %}
+        <div class="side-bar-header mt-0">Dashboard</div>
+        {{ link(DASHBOARD_URL, "Dashboard", "dashboard") }}
+        <div class="side-bar-header">TA</div>
+        {{ link(ADD_TA_URL, "Add TA", "person_add") }}
+        {{ link(ALL_TA_URL, "Enrolled TA's", "groups") }}
 
-      {% endif %}
-      {{ link(ALL_FILES_URL, "All Files", "folder") }}
-      {{ link(UPLOAD_FILE_URL, "Upload file", "note_add") }}
-      {{ link(AI_UPLOAD_FILE_URL, "AI Checker", "note_add") }}
+        {% endif %}
+        <div class="side-bar-header">Files</div>
+        {{ link(ALL_FILES_URL, "All Files", "folder") }}
+        {{ link(UPLOAD_FILE_URL, "Upload file", "note_add") }}
+        {{ link(AI_UPLOAD_FILE_URL, "AI Checker", "note_add") }}
 
-      {% if is_instructor == Flase %}
-      {{ link(SETTINGS_URL, "Settings", "settings") }}
-      {% endif %}
+        {% if is_instructor == Flase %}
+        {{ link(SETTINGS_URL, "Settings", "settings") }}
+        {% endif %}
+      </div>
       <div class="mt-5"></div>
 
       <div class="mt-auto d-flex align-items-center justify-content-around">

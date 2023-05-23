@@ -54,37 +54,58 @@
       <div class="logo mt-3">
         <img src="/static/images/icons/icon.png" class="w-50" alt="MDB Logo" />
       </div>
-      <div class="side-bar-item {{is_active('admin.index')}}">
-        <a href="{{url_for('admin.index')}}">
-          <i class="material-icons-round">storage</i>
-          <span>
-            Accounts
-          </span>
-        </a>
+      <div class="side-bar-content">
+        <div class="side-bar-header mt-0">ALL Accounts</div>
+        <div class="side-bar-item {{is_active('admin.index')}}">
+          <a href="{{url_for('admin.index')}}">
+            <i class="material-icons-round">storage</i>
+            <span>
+              Accounts
+            </span>
+          </a>
+        </div>
+        <div class="side-bar-header">TA Accounts</div>
+        <div class="side-bar-item {{is_active('admin.add_students')}}">
+          <a href="{{url_for('admin.add_students')}}">
+            <i class="material-icons-round">people</i>
+            <span>
+              Add TA
+            </span>
+          </a>
+        </div>
+        <div class="side-bar-item {{is_active('admin.all_students')}}">
+          <a href="{{url_for('admin.all_students')}}">
+            <i class="material-icons-round">people</i>
+            <span>
+              Enrolled TA's
+            </span>
+          </a>
+        </div>
+        <div class="side-bar-header">Instructors</div>
+        <div class="side-bar-item {{is_active('admin.add_instructors')}}">
+          <a href="{{url_for('admin.add_instructors')}}">
+            <i class="material-icons-round">people</i>
+            <span>
+              Add Instructor
+            </span>
+          </a>
+        </div>
+        <div class="side-bar-item {{is_active('admin.all_instructors')}}">
+          <a href="{{url_for('admin.all_instructors')}}">
+            <i class="material-icons-round">people</i>
+            <span>
+              Enrolled Instructors
+            </span>
+          </a>
+        </div>
+        <div class="side-bar-header">Settings</div>
+        <div class="side-bar-item {{is_active('admin.settings')}}">
+          <a href="{{url_for('admin.settings')}}">
+            <i class="material-icons-round">settings</i>
+            <span>Settings</span>
+          </a>
+        </div>
       </div>
-      <div class="side-bar-item {{is_active('admin.all_students')}}">
-        <a href="{{url_for('admin.all_students')}}">
-          <i class="material-icons-round">people</i>
-          <span>
-            TA Accounts
-          </span>
-        </a>
-      </div>
-      <div class="side-bar-item {{is_active('admin.all_instructors')}}">
-        <a href="{{url_for('admin.all_instructors')}}">
-          <i class="material-icons-round">people</i>
-          <span>
-            Instructors
-          </span>
-        </a>
-      </div>
-      <div class="side-bar-item {{is_active('admin.settings')}}">
-        <a href="{{url_for('admin.settings')}}">
-          <i class="material-icons-round">settings</i>
-          <span>Settings</span>
-        </a>
-      </div>
-
       <div class="mt-auto d-flex align-items-center justify-content-around">
 
         <!-- Avatar -->

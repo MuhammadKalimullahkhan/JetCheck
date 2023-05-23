@@ -268,6 +268,23 @@ img {
     margin-top: 10px;
     font-size: xx-small;
 }
+.side-bar .side-bar-header{
+    opacity: .5;
+    margin-top: 1.5em;
+    background-color: var(--primary-color);
+    letter-spacing: 1px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--fonts-color);
+}
+.side-bar .side-bar-content{
+    height: 70%;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+.side-bar .side-bar-content::-webkit-scrollbar{
+    width: 0px;
+}
 
 .file-info-bar {
     width: 300px;
